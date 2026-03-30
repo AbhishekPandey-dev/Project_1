@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>#abhishek</title>
+  <link rel="stylesheet" href="https://public.codepenassets.com/css/normalize-5.0.0.min.css" />
+  <link rel="shortcut icon" href="assets/icon/favicon.svg" type="image/x-icon" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <div id="preloader" class="preloader">
+    <div class="preloader-content">
+      <div class="ghost-loader">
+        <svg class="ghost-svg" height="80" viewBox="0 0 512 512" width="80" xmlns="http://www.w3.org/2000/svg">
+          <!-- Ghost body - white -->
+          <path class="ghost-body"
+            d="m508.374 432.802s-46.6-39.038-79.495-275.781c-8.833-87.68-82.856-156.139-172.879-156.139-90.015 0-164.046 68.458-172.879 156.138-32.895 236.743-79.495 275.782-79.495 275.782-15.107 25.181 20.733 28.178 38.699 27.94 35.254-.478 35.254 40.294 70.516 40.294 35.254 0 35.254-35.261 70.508-35.261s37.396 45.343 72.65 45.343 37.389-45.343 72.651-45.343c35.254 0 35.254 35.261 70.508 35.261s35.27-40.772 70.524-40.294c17.959.238 53.798-2.76 38.692-27.94z"
+            fill="white" />
+          <!-- Left eye - black with pulsing animation -->
+          <circle class="ghost-eye left-eye" cx="208" cy="225" r="22" fill="black" />
+          <!-- Right eye - black with pulsing animation -->
+          <circle class="ghost-eye right-eye" cx="297" cy="225" r="22" fill="black" />
+        </svg>
+      </div>
+      <div class="loading-text">Summoning spirits</div>
+      <div class="loading-progress">
+        <div class="progress-bar"></div>
+      </div>
+    </div>
+  </div>
+  <!-- Main Content-->
+  <div class="content" id="main-content">
+    <header>
+      <div class="clock-container">
+        <div class="glass"></div>
+        <div class="clock-content">
+          <div id="live-clock"></div>
+          <div id="day"></div>
+          <div id="date"></div>
+        </div>
+      </div>
+    </header>
+    <main>
+      <!-- Spotlight Search -->
+      <div class="spotlight-wrapper">
+        <div class="spotlight" id="spotlight">
+          <form action="https://www.google.com/search" method="get" id="searchForm" autocomplete="off">
+            <div class="search-bar">
+              <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+              <input type="text" name="q" id="searchInput" placeholder="Search Google..." />
+              <div class="search-spinner" id="spinner"></div>
+              <button type="button" class="clear-btn" id="clearBtn" title="Clear">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                  stroke-linecap="round">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+              <button type="button" class="quick-links-btn" id="quickLinksBtn" title="Quick Links">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <rect x="3" y="3" width="7" height="7" rx="1.5" />
+                  <rect x="14" y="3" width="7" height="7" rx="1.5" />
+                  <rect x="3" y="14" width="7" height="7" rx="1.5" />
+                  <rect x="14" y="14" width="7" height="7" rx="1.5" />
+                </svg>
+              </button>
+              <span class="esc-hint">ESC</span>
+            </div>
+            <div class="results-panel" id="resultsPanel">
+              <div class="results-inner" id="resultsInner"></div>
+            </div>
+            <div class="spotlight-footer">
+              <div class="footer-left">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                  <circle cx="12" cy="17" r="0.5" />
+                </svg>
+                Google Search
+              </div>
+              <div class="footer-actions">
+                <div class="footer-key">
+                  <kbd>↑</kbd><kbd>↓</kbd> navigate
+                </div>
+                <div class="footer-key"><kbd>↵</kbd> search</div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </main>
+    <footer>
+      <div class="dock">
+        <ul class="dockbar">
+          <li class="dockitems">
+            <a href="#" class="dockitemlink" id="googleDockLink" title="Google">
+              <img src="assets/icon/google.png" alt="Google" class="dockitemicon" />
+            </a>
+          </li>
+          <li class="dockitems">
+            <a href="" class="dockitemlink" title="HTML">
+              <img src="assets/icon/html.png" alt="HTML" class="dockitemicon" />
+            </a>
+          </li>
+          <li class="dockitems">
+            <a href="" class="dockitemlink" title="CSS">
+              <img src="assets/icon/css.png" alt="CSS" class="dockitemicon" />
+            </a>
+          </li>
+          <li class="dockitems">
+            <a href="" class="dockitemlink" title="JavaScript">
+              <img src="assets/icon/javascript.png" alt="JavaScript" class="dockitemicon" />
+            </a>
+          </li>
+          <li class="dockitems">
+            <a href="" class="dockitemlink" title="Python">
+              <img src="assets/icon/python.png" alt="Python" class="dockitemicon" />
+            </a>
+          </li>
+          <li class="dockitems">
+            <a href="" class="dockitemlink" title="Java">
+              <img src="assets/icon/java.png" alt="Java" class="dockitemicon" />
+            </a>
+          </li>
+          <li class="dockitems">
+            <a href="" class="dockitemlink" title="C">
+              <img src="assets/icon/c.png" alt="C" class="dockitemicon" />
+            </a>
+          </li>
+          <li class="dockitems">
+            <a href="" class="dockitemlink" title="C++">
+              <img src="assets/icon/C++-(CPlusPlus).png" alt="C++" class="dockitemicon" />
+            </a>
+          </li>
+          <li class="dockitems">
+            <a href="" class="dockitemlink" title="PHP">
+              <img src="assets/icon/php.png" alt="PHP" class="dockitemicon" />
+            </a>
+          </li>
+          <li class="dockitems">
+            <a href="" class="dockitemlink" title="Tailwind CSS">
+              <img src="assets/icon/Tailwind CSS.png" alt="Tailwind CSS" class="dockitemicon" />
+            </a>
+          </li>
+          <li class="dockitems">
+            <a href="" class="dockitemlink" title="React">
+              <img src="assets/icon/react.png" alt="React" class="dockitemicon" />
+            </a>
+          </li>
+          <li class="dockitems">
+            <a href="" class="dockitemlink" title="Next.js">
+              <img src="assets/icon/Next.js.png" alt="Next.js" class="dockitemicon" />
+            </a>
+          </li>
+          <li class="dockitems">
+            <a href="" class="dockitemlink" title="TypeScript">
+              <img src="assets/icon/typescript.png" alt="TypeScript" class="dockitemicon" />
+            </a>
+          </li>
+          <li class="dockitems">
+            <a href="" class="dockitemlink" title="Node.js">
+              <img src="assets/icon/Node.js.png" alt="Node.js" class="dockitemicon" />
+            </a>
+          </li>
+          <li class="dockitems">
+            <a href="" class="dockitemlink" title="MongoDB">
+              <img src="assets/icon/mongodb.png" alt="MongoDB" class="dockitemicon" />
+            </a>
+          </li>
+          <li class="dockitems">
+            <a href="" class="dockitemlink" title="MySQL">
+              <img src="assets/icon/mysql.png" alt="MySQL" class="dockitemicon" />
+            </a>
+          </li>
+          <li class="dockitems">
+            <a href="" class="dockitemlink" title="Docker">
+              <img src="assets/icon/docker.png" alt="Docker" class="dockitemicon" />
+            </a>
+          </li>
+          <li class="dockitems">
+            <a href="" class="dockitemlink" title="PowerShell">
+              <img src="assets/icon/powershell.png" alt="PowerShell" class="dockitemicon" />
+            </a>
+          </li>
+          <li class="dockitems">
+            <a href="" class="dockitemlink" title="GitHub">
+              <img src="assets/icon/github.png" alt="GitHub" class="dockitemicon" />
+            </a>
+          </li>
+        </ul>
+      </div>
+    </footer>
+  </div>
+  <script type="module" src="assets/js/background.js"></script>
+  <script type="module" src="script.js"></script>
+  <script src="assets/js/spotlight.js"></script>
+</body>
+
+</html>
