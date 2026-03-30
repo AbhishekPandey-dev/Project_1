@@ -92,3 +92,60 @@ function updateIcons(pointer) {
     });
   }
 }
+
+// macOS Window Logic
+const notesIcon = document.getElementById('notes-app-icon');
+const macWindow = document.getElementById('mac-window');
+const closeBtn = document.getElementById('mac-close');
+const maximizeBtn = document.getElementById('mac-maximize');
+const titleBar = document.getElementById('mac-titlebar');
+
+if (notesIcon && macWindow) {
+  // Open window with animation
+  notesIcon.addEventListener('click', () => {
+    macWindow.classList.add('active');
+  });
+
+  // Close window
+  closeBtn.addEventListener('click', () => {
+    macWindow.classList.remove('active');
+    setTimeout(() => {
+      macWindow.classList.remove('maximized');
+    }, 300);
+  });
+
+  // Maximize window
+  maximizeBtn.addEventListener('click', () => {
+    macWindow.classList.toggle('maximized');
+  });
+
+  // Window Dragging Logic
+  let isDragging = false;
+  let offsetX, offsetY;
+  
+  titleBar.addEventListener('mousedown', (e) => {
+    if (macWindow.classList.contains('maximized') || e.target.closest('.mac-traffic-lights')) return;
+    
+    isDragging = true;
+    const rect = macWindow.getBoundingClientRect();
+    offsetX = e.clientX - rect.left;
+    offsetY = e.clientY - rect.top;
+    
+    // Disable smooth transition while dragging
+    macWindow.style.transition = 'none';
+  });
+  
+  document.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    macWindow.style.left = (e.clientX - offsetX) + 'px';
+    macWindow.style.top = (e.clientY - offsetY) + 'px';
+  });
+  
+  document.addEventListener('mouseup', () => {
+    if (isDragging) {
+      isDragging = false;
+      // Restore smooth transition after dragging
+      macWindow.style.transition = 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease';
+    }
+  });
+}

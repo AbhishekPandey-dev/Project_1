@@ -99,11 +99,26 @@
         </div>
       </div>
       <div class="components">
-        <div class="notes">
-          <img src="assets/icon/notes.png" alt="Pages" class="app-icon" />
+        <div class="notes" id="notes-app-icon">
+          <img src="assets/icon/notes.png" alt="Notes" class="app-icon" />
           <span class="app-label">Pages</span>
         </div>
       </div>  
+
+      <!-- macOS Window Container -->
+      <div class="mac-window" id="mac-window">
+        <div class="mac-titlebar" id="mac-titlebar">
+          <div class="mac-traffic-lights">
+            <button class="mac-btn close" id="mac-close"></button>
+            <button class="mac-btn minimize"></button>
+            <button class="mac-btn maximize" id="mac-maximize"></button>
+          </div>
+          <div class="mac-title">Pages</div>
+        </div>
+        <div class="mac-content">
+          <iframe src="assets/componets/pages.html" id="mac-iframe"></iframe>
+        </div>
+      </div>
     </main>
     <!-- Footer -->
     <footer>
