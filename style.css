@@ -705,6 +705,27 @@ footer {
   /* border-radius: 50%; */
 }
 
+.dockitemlabel {
+  text-wrap: nowrap;
+  position: absolute;
+  bottom: 45px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 8px;
+  background-color: rgba(255, 255, 255, 0.4);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-weight: 500;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  padding: 1.5px 3px;
+  border-radius: 4px;
+  opacity: 0;
+  pointer-events: none;
+}
+.dockitems:hover .dockitemlabel {
+  opacity: 1;
+  pointer-events: auto;
+}
+
 /* Desktop Components (macOS style) */
 .components {
   position: absolute;
