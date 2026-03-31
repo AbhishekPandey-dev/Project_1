@@ -741,7 +741,7 @@ footer {
 }
 
 
-.notes {
+.component-item {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -754,7 +754,7 @@ footer {
   position: relative;
 }
 
-.notes:hover {
+.component-item:hover {
   transform: scale(1.05) translateY(-10px);
 }
 

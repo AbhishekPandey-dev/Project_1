@@ -95,16 +95,28 @@ function updateIcons(pointer) {
 
 // macOS Window Logic
 const notesIcon = document.getElementById('notes-app-icon');
+const calculatorIcon = document.getElementById('calculator-app-icon');
 const macWindow = document.getElementById('mac-window');
 const closeBtn = document.getElementById('mac-close');
 const maximizeBtn = document.getElementById('mac-maximize');
 const titleBar = document.getElementById('mac-titlebar');
+const macIframe = document.getElementById('mac-iframe');
+const macTitle = document.querySelector('.mac-title');
 
-if (notesIcon && macWindow) {
+function openMacWindow(title, src) {
+  if (macTitle) macTitle.textContent = title;
+  if (macIframe) macIframe.src = src;
+  macWindow.classList.add('active');
+}
+
+if (macWindow) {
   // Open window with animation
-  notesIcon.addEventListener('click', () => {
-    macWindow.classList.add('active');
-  });
+  if (notesIcon) {
+    notesIcon.addEventListener('click', () => openMacWindow('Pages', 'assets/componets/pages.html'));
+  }
+  if (calculatorIcon) {
+    calculatorIcon.addEventListener('click', () => openMacWindow('Calculator', 'assets/componets/calculator.html'));
+  }
 
   // Close window
   closeBtn.addEventListener('click', () => {
