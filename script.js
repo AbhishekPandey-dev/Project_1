@@ -122,6 +122,22 @@ if (macWindow) {
     converterIcon.addEventListener('click', () => openMacWindow('Converter', 'assets/componets/converter.html'));
   }
 
+  const toolsIcon = document.getElementById('tools-app-icon');
+  if (toolsIcon) {
+    toolsIcon.addEventListener('click', () => {
+      openMacWindow('Converter', 'assets/componets/converter.html');
+      // Auto-click the tools tab after iframe loads
+      macIframe.onload = () => {
+        setTimeout(() => {
+          const toolsTab = macIframe.contentDocument.getElementById('tools-tab');
+          if (toolsTab) {
+            toolsTab.click();
+          }
+        }, 100);
+      };
+    });
+  }
+
   // Close window
   closeBtn.addEventListener('click', () => {
     macWindow.classList.remove('active');
