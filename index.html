@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="https://public.codepenassets.com/css/normalize-5.0.0.min.css" />
   <link rel="shortcut icon" href="assets/icon/favicon.svg" type="image/x-icon" />
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="assets/css/windowManager.css" />
 </head>
 
 <body>
@@ -117,20 +118,7 @@
         </div>
       </div>
 
-        <!-- macOS Window Container -->
-        <div class="mac-window" id="mac-window">
-          <div class="mac-titlebar" id="mac-titlebar">
-            <div class="mac-traffic-lights">
-              <button class="mac-btn close" id="mac-close"></button>
-              <button class="mac-btn minimize"></button>
-              <button class="mac-btn maximize" id="mac-maximize"></button>
-            </div>
-            <div class="mac-title">Pages</div>
-          </div>
-          <div class="mac-content">
-            <iframe src="assets/componets/pages.html" id="mac-iframe"></iframe>
-          </div>
-        </div>
+
     </main>
     <!-- Footer -->
     <footer>
@@ -255,6 +243,7 @@
     </footer>
   </div>
   <script type="module" src="assets/js/background.js"></script>
+  <script src="assets/js/windowManager.js"></script>
   <script type="module" src="script.js"></script>
   <script src="assets/js/spotlight.js"></script>
 </body>

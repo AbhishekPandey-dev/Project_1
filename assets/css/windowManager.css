@@ -1,0 +1,396 @@
+/* ============================================================
+   macOS Window Manager Styles
+   ============================================================ */
+
+/* Window Container */
+#wm-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 300;
+}
+
+/* ——— Window ——— */
+.wm-window {
+  position: absolute;
+  background: rgba(30, 30, 30, 0.78);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  box-shadow:
+    0 0 0 0.5px rgba(0, 0, 0, 0.3),
+    0 25px 70px rgba(0, 0, 0, 0.45),
+    0 8px 25px rgba(0, 0, 0, 0.25),
+    inset 0 0.5px 0 rgba(255, 255, 255, 0.12);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  pointer-events: auto;
+  transform-origin: center center;
+  will-change: transform, opacity;
+  opacity: 0;
+  transform: scale(0.88) translateY(12px);
+}
+
+/* Unfocused windows */
+.wm-window:not(.wm-focused) {
+  box-shadow:
+    0 0 0 0.5px rgba(0, 0, 0, 0.2),
+    0 12px 35px rgba(0, 0, 0, 0.3),
+    0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.wm-window:not(.wm-focused) .wm-titlebar {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.wm-window:not(.wm-focused) .wm-btn.wm-close,
+.wm-window:not(.wm-focused) .wm-btn.wm-minimize,
+.wm-window:not(.wm-focused) .wm-btn.wm-maximize {
+  background: rgba(255, 255, 255, 0.12) !important;
+}
+
+.wm-window:not(.wm-focused) .wm-title {
+  opacity: 0.5;
+}
+
+/* ——— Open Animation ——— */
+.wm-window.wm-opening {
+  transform: scale(0.88) translateY(12px);
+  opacity: 0;
+}
+
+.wm-window.wm-visible {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+  transition:
+    transform 0.42s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ——— Close Animation ——— */
+@keyframes wmCloseWindow {
+  0% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.85) translateY(18px);
+    opacity: 0;
+  }
+}
+
+.wm-window.wm-closing {
+  animation: wmCloseWindow 0.28s cubic-bezier(0.4, 0, 0.8, 0.2) forwards;
+  pointer-events: none !important;
+}
+
+/* ——— Maximize transition ——— */
+.wm-window.wm-maximized {
+  width: 100vw !important;
+  height: 100vh !important;
+  top: 0 !important;
+  left: 0 !important;
+  border-radius: 0;
+  transition:
+    width 0.38s cubic-bezier(0.16, 1, 0.3, 1),
+    height 0.38s cubic-bezier(0.16, 1, 0.3, 1),
+    top 0.38s cubic-bezier(0.16, 1, 0.3, 1),
+    left 0.38s cubic-bezier(0.16, 1, 0.3, 1),
+    border-radius 0.38s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.wm-window:not(.wm-maximized) {
+  transition:
+    width 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    height 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    top 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    left 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    border-radius 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* No transition on drag/resize */
+.wm-window.wm-dragging,
+.wm-window.wm-resizing {
+  transition: none !important;
+}
+
+.wm-window.wm-dragging {
+  cursor: grabbing;
+}
+
+.wm-window.wm-dragging .wm-content iframe {
+  pointer-events: none;
+}
+
+.wm-window.wm-resizing .wm-content iframe {
+  pointer-events: none;
+}
+
+/* ——— Titlebar ——— */
+.wm-titlebar {
+  height: 38px;
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  position: relative;
+  user-select: none;
+  cursor: default;
+  -webkit-app-region: drag;
+}
+
+.wm-traffic-lights {
+  display: flex;
+  gap: 8px;
+  z-index: 2;
+  -webkit-app-region: no-drag;
+}
+
+.wm-btn {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: filter 0.15s, transform 0.15s;
+}
+
+.wm-btn:active {
+  filter: brightness(0.75);
+  transform: scale(0.88);
+}
+
+.wm-btn svg {
+  opacity: 0;
+  transition: opacity 0.15s;
+  color: rgba(0, 0, 0, 0.55);
+  pointer-events: none;
+}
+
+.wm-traffic-lights:hover .wm-btn svg {
+  opacity: 1;
+}
+
+.wm-btn.wm-close {
+  background: #ff5f56;
+  box-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.15), inset 0 -0.5px 0 rgba(0, 0, 0, 0.1);
+}
+.wm-btn.wm-minimize {
+  background: #ffbd2e;
+  box-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.15), inset 0 -0.5px 0 rgba(0, 0, 0, 0.1);
+}
+.wm-btn.wm-maximize {
+  background: #27c93f;
+  box-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.15), inset 0 -0.5px 0 rgba(0, 0, 0, 0.1);
+}
+
+.wm-title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.82);
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* ——— Content ——— */
+.wm-content {
+  flex: 1;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.wm-content iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: transparent;
+}
+
+/* ——— Resize Handles ——— */
+.wm-resize {
+  position: absolute;
+  z-index: 10;
+}
+
+.wm-resize-n {
+  top: -4px;
+  left: 12px;
+  right: 12px;
+  height: 8px;
+  cursor: n-resize;
+}
+
+.wm-resize-s {
+  bottom: -4px;
+  left: 12px;
+  right: 12px;
+  height: 8px;
+  cursor: s-resize;
+}
+
+.wm-resize-e {
+  right: -4px;
+  top: 12px;
+  bottom: 12px;
+  width: 8px;
+  cursor: e-resize;
+}
+
+.wm-resize-w {
+  left: -4px;
+  top: 12px;
+  bottom: 12px;
+  width: 8px;
+  cursor: w-resize;
+}
+
+.wm-resize-ne {
+  top: -4px;
+  right: -4px;
+  width: 16px;
+  height: 16px;
+  cursor: ne-resize;
+}
+
+.wm-resize-nw {
+  top: -4px;
+  left: -4px;
+  width: 16px;
+  height: 16px;
+  cursor: nw-resize;
+}
+
+.wm-resize-se {
+  bottom: -4px;
+  right: -4px;
+  width: 16px;
+  height: 16px;
+  cursor: se-resize;
+}
+
+.wm-resize-sw {
+  bottom: -4px;
+  left: -4px;
+  width: 16px;
+  height: 16px;
+  cursor: sw-resize;
+}
+
+/* Hide resize handles when maximized */
+.wm-maximized .wm-resize {
+  display: none;
+}
+
+/* ——— Dock Divider (separates regular dock items from minimized apps) ——— */
+.dock-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 0;
+  margin: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition:
+    width 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.3s ease,
+    margin 0.35s ease;
+  list-style: none;
+  pointer-events: none;
+}
+
+.dock-divider.dock-divider-visible {
+  width: 16px;
+  margin: 0 2px;
+  opacity: 1;
+}
+
+.dock-divider.dock-divider-removing {
+  width: 0;
+  margin: 0;
+  opacity: 0;
+}
+
+.dock-divider-line {
+  display: block;
+  width: 1.5px;
+  height: 28px;
+  border-radius: 1px;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.25) 20%,
+    rgba(255, 255, 255, 0.35) 50%,
+    rgba(255, 255, 255, 0.25) 80%,
+    transparent 100%
+  );
+  box-shadow:
+    0 0 4px rgba(255, 255, 255, 0.08),
+    0 0 1px rgba(255, 255, 255, 0.15);
+}
+
+/* ——— Minimized App Dock Items (inside main dock) ——— */
+.wm-dock-item {
+  position: relative;
+}
+
+.wm-dock-item .dockitemicon {
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.35));
+  transition: filter 0.2s ease;
+}
+
+.wm-dock-item:hover .dockitemicon {
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.5));
+}
+
+/* Glowing active dot under minimized dock items */
+.wm-dock-dot {
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%) scale(0);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow:
+    0 0 4px rgba(255, 255, 255, 0.6),
+    0 0 8px rgba(255, 255, 255, 0.3);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+  opacity: 0;
+}
+
+.wm-dock-item-active .wm-dock-dot {
+  transform: translateX(-50%) scale(1);
+  opacity: 1;
+}
+
+/* ——— Icon Bounce Animation ——— */
+@keyframes wmIconBounce {
+  0%, 100% { transform: translateY(0); }
+  25% { transform: translateY(-18px); }
+  50% { transform: translateY(0); }
+  65% { transform: translateY(-8px); }
+  82% { transform: translateY(0); }
+}
+
+.wm-icon-bounce {
+  animation: wmIconBounce 0.7s cubic-bezier(0.28, 0.84, 0.42, 1) !important;
+}

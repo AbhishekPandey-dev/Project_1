@@ -93,91 +93,23 @@ function updateIcons(pointer) {
   }
 }
 
-// macOS Window Logic
+// macOS Window Manager — App Icon Bindings
+// Each click spawns a new independent window (multiple windows supported)
+
 const notesIcon = document.getElementById('notes-app-icon');
 const calculatorIcon = document.getElementById('calculator-app-icon');
-const macWindow = document.getElementById('mac-window');
-const closeBtn = document.getElementById('mac-close');
-const maximizeBtn = document.getElementById('mac-maximize');
-const titleBar = document.getElementById('mac-titlebar');
-const macIframe = document.getElementById('mac-iframe');
-const macTitle = document.querySelector('.mac-title');
+const converterIcon = document.getElementById('converter-app-icon');
+const toolsIcon = document.getElementById('tools-app-icon');
 
-function openMacWindow(title, src) {
-  if (macTitle) macTitle.textContent = title;
-  if (macIframe) macIframe.src = src;
-  macWindow.classList.add('active');
+if (notesIcon) {
+  notesIcon.addEventListener('click', () => WindowManager.open('pages'));
 }
-
-if (macWindow) {
-  // Open window with animation
-  if (notesIcon) {
-    notesIcon.addEventListener('click', () => openMacWindow('Pages', 'assets/componets/pages.html'));
-  }
-  if (calculatorIcon) {
-    calculatorIcon.addEventListener('click', () => openMacWindow('Calculator', 'assets/componets/calculator.html'));
-  }
-  const converterIcon = document.getElementById('converter-app-icon');
-  if (converterIcon) {
-    converterIcon.addEventListener('click', () => openMacWindow('Converter', 'assets/componets/converter.html'));
-  }
-
-  const toolsIcon = document.getElementById('tools-app-icon');
-  if (toolsIcon) {
-    toolsIcon.addEventListener('click', () => {
-      openMacWindow('Converter', 'assets/componets/converter.html');
-      // Auto-click the tools tab after iframe loads
-      macIframe.onload = () => {
-        setTimeout(() => {
-          const toolsTab = macIframe.contentDocument.getElementById('tools-tab');
-          if (toolsTab) {
-            toolsTab.click();
-          }
-        }, 100);
-      };
-    });
-  }
-
-  // Close window
-  closeBtn.addEventListener('click', () => {
-    macWindow.classList.remove('active');
-    setTimeout(() => {
-      macWindow.classList.remove('maximized');
-    }, 300);
-  });
-
-  // Maximize window
-  maximizeBtn.addEventListener('click', () => {
-    macWindow.classList.toggle('maximized');
-  });
-
-  // Window Dragging Logic
-  let isDragging = false;
-  let offsetX, offsetY;
-  
-  titleBar.addEventListener('mousedown', (e) => {
-    if (macWindow.classList.contains('maximized') || e.target.closest('.mac-traffic-lights')) return;
-    
-    isDragging = true;
-    const rect = macWindow.getBoundingClientRect();
-    offsetX = e.clientX - rect.left;
-    offsetY = e.clientY - rect.top;
-    
-    // Disable smooth transition while dragging
-    macWindow.style.transition = 'none';
-  });
-  
-  document.addEventListener('mousemove', (e) => {
-    if (!isDragging) return;
-    macWindow.style.left = (e.clientX - offsetX) + 'px';
-    macWindow.style.top = (e.clientY - offsetY) + 'px';
-  });
-  
-  document.addEventListener('mouseup', () => {
-    if (isDragging) {
-      isDragging = false;
-      // Restore smooth transition after dragging
-      macWindow.style.transition = 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease';
-    }
-  });
+if (calculatorIcon) {
+  calculatorIcon.addEventListener('click', () => WindowManager.open('calculator'));
+}
+if (converterIcon) {
+  converterIcon.addEventListener('click', () => WindowManager.open('converter'));
+}
+if (toolsIcon) {
+  toolsIcon.addEventListener('click', () => WindowManager.open('tools'));
 }
