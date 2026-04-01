@@ -731,8 +731,9 @@ footer {
   position: absolute;
   right: 0px;
   display: grid;
+  align-items: center;
   grid-template-columns: auto;
-  grid-template-rows: repeat(5, 1fr);
+  grid-template-rows: repeat(6, 1fr);
   grid-auto-flow: column;
   width: auto;
   height: calc(100% - 60px);
