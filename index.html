@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 
-<body> 
+<body>
   <!-- Preloader -->
   <div id="preloader" class="preloader">
     <div class="preloader-content">
@@ -107,22 +107,30 @@
           <img src="assets/icon/calculator.png" alt="Calculator" class="app-icon" />
           <span class="app-label">Calculator</span>
         </div>
-      </div>  
-
-      <!-- macOS Window Container -->
-      <div class="mac-window" id="mac-window">
-        <div class="mac-titlebar" id="mac-titlebar">
-          <div class="mac-traffic-lights">
-            <button class="mac-btn close" id="mac-close"></button>
-            <button class="mac-btn minimize"></button>
-            <button class="mac-btn maximize" id="mac-maximize"></button>
-          </div>
-          <div class="mac-title">Pages</div>
+        <div class="converter component-item" id="converter-app-icon">
+          <img src="assets/icon/converter.png" alt="Converter" class="app-icon" />
+          <span class="app-label">Converter</span>
         </div>
-        <div class="mac-content">
-          <iframe src="assets/componets/pages.html" id="mac-iframe"></iframe>
+        <div class="tools component-item" id="tools-app-icon">
+          <img src="assets/icon/tools.png" alt="Tools" class="app-icon" />
+          <span class="app-label">Tools</span>
         </div>
       </div>
+
+        <!-- macOS Window Container -->
+        <div class="mac-window" id="mac-window">
+          <div class="mac-titlebar" id="mac-titlebar">
+            <div class="mac-traffic-lights">
+              <button class="mac-btn close" id="mac-close"></button>
+              <button class="mac-btn minimize"></button>
+              <button class="mac-btn maximize" id="mac-maximize"></button>
+            </div>
+            <div class="mac-title">Pages</div>
+          </div>
+          <div class="mac-content">
+            <iframe src="assets/componets/pages.html" id="mac-iframe"></iframe>
+          </div>
+        </div>
     </main>
     <!-- Footer -->
     <footer>
@@ -172,7 +180,7 @@
           </li>
           <li class="dockitems">
             <span class="dockitemlabel">C++</span>
-            <a href="" class="dockitemlink" >
+            <a href="" class="dockitemlink">
               <img src="assets/icon/C++-(CPlusPlus).png" alt="C++" class="dockitemicon" />
             </a>
           </li>
@@ -214,7 +222,7 @@
           </li>
           <li class="dockitems">
             <span class="dockitemlabel">MongoDB</span>
-            <a href="" class="dockitemlink" >
+            <a href="" class="dockitemlink">
               <img src="assets/icon/mongodb.png" alt="MongoDB" class="dockitemicon" />
             </a>
           </li>

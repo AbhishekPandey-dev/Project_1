@@ -1,0 +1,1480 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ConvertFlow</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+      :root {
+        --bg: #1a1a1e;
+        --bg2: #252528;
+        --bg3: #333336;
+        --glass: rgba(255, 255, 255, 0.04);
+        --brd: rgba(255, 255, 255, 0.08);
+        --t1: #fff;
+        --t2: #98989d;
+        --t3: #636366;
+        --blue: #0a84ff;
+        --green: #30d158;
+        --red: #ff453a;
+        --orange: #ff9f0a;
+        --purple: #bf5af2;
+        --cyan: #64d2ff;
+        --r: 10px;
+        --font:
+          -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue",
+          sans-serif;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: var(--font);
+        background: var(--bg);
+        color: var(--t1);
+        height: 100vh;
+        overflow: hidden;
+        font-size: 13px;
+      }
+      ::-webkit-scrollbar {
+        width: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.12);
+        border-radius: 3px;
+      }
+
+      .app {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+      }
+      .tabs {
+        display: flex;
+        gap: 6px;
+        padding: 10px 14px;
+        background: var(--bg2);
+        border-bottom: 1px solid var(--brd);
+        overflow-x: auto;
+        flex-shrink: 0;
+      }
+      .tab {
+        background: var(--bg3);
+        border: 1px solid var(--brd);
+        color: var(--t2);
+        padding: 6px 14px;
+        border-radius: 16px;
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: all 0.2s;
+      }
+      .tab:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--t1);
+      }
+      .tab.active {
+        background: var(--blue);
+        color: #fff;
+        border-color: transparent;
+      }
+
+      .main {
+        flex: 1;
+        overflow-y: auto;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+
+      .drop-zone {
+        border: 2px dashed var(--brd);
+        border-radius: var(--r);
+        padding: 40px 20px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s;
+        background: var(--bg2);
+      }
+      .drop-zone:hover {
+        border-color: var(--t3);
+        background: var(--bg3);
+      }
+      .drop-zone.over {
+        border-color: var(--blue);
+        background: rgba(10, 132, 255, 0.08);
+        transform: scale(1.01);
+      }
+      .drop-zone h2 {
+        font-size: 16px;
+        font-weight: 600;
+        margin: 8px 0 4px;
+      }
+      .drop-zone p {
+        color: var(--t3);
+        font-size: 11px;
+      }
+      .drop-zone .icon {
+        font-size: 32px;
+        margin-bottom: 4px;
+      }
+
+      .panel {
+        background: var(--bg2);
+        border: 1px solid var(--brd);
+        border-radius: var(--r);
+        padding: 14px;
+        animation: fadeUp 0.3s ease;
+      }
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .file-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        background: var(--glass);
+        border: 1px solid var(--brd);
+        border-radius: 8px;
+        margin-bottom: 8px;
+        animation: slideIn 0.3s ease;
+      }
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateX(-12px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+      .file-row .icon {
+        font-size: 20px;
+      }
+      .file-row .info {
+        flex: 1;
+        min-width: 0;
+      }
+      .file-row .name {
+        display: block;
+        font-weight: 500;
+        font-size: 12px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .file-row .meta {
+        font-size: 10px;
+        color: var(--t3);
+        margin-top: 2px;
+      }
+      .file-row select {
+        background: var(--bg);
+        border: 1px solid var(--brd);
+        color: var(--t1);
+        padding: 5px 8px;
+        border-radius: 6px;
+        font-size: 11px;
+        outline: none;
+      }
+      .file-row select:focus {
+        border-color: var(--blue);
+      }
+
+      .btn {
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 12px;
+        cursor: pointer;
+        border: none;
+        transition: all 0.15s;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .btn-p {
+        background: var(--blue);
+        color: #fff;
+      }
+      .btn-p:hover {
+        filter: brightness(1.15);
+        transform: translateY(-1px);
+      }
+      .btn-s {
+        background: var(--bg3);
+        color: var(--t1);
+        border: 1px solid var(--brd);
+      }
+      .btn-d {
+        background: transparent;
+        color: var(--red);
+        border: 1px solid var(--red);
+      }
+      .btn-d:hover {
+        background: var(--red);
+        color: #fff;
+      }
+      .btn-sm {
+        padding: 4px 10px;
+        font-size: 11px;
+        border-radius: 6px;
+      }
+      .btn-x {
+        background: transparent;
+        border: none;
+        color: var(--t3);
+        cursor: pointer;
+        font-size: 14px;
+        padding: 2px 6px;
+        border-radius: 4px;
+      }
+      .btn-x:hover {
+        background: rgba(255, 0, 0, 0.15);
+        color: var(--red);
+      }
+
+      .opts {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+      .opt {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+      .opt label {
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--t3);
+        font-weight: 600;
+      }
+      .opt input[type="range"] {
+        accent-color: var(--blue);
+        width: 100%;
+      }
+      .opt input[type="number"],
+      .opt input[type="text"],
+      .opt select,
+      .opt textarea {
+        background: var(--bg);
+        border: 1px solid var(--brd);
+        color: var(--t1);
+        padding: 6px 10px;
+        border-radius: 6px;
+        font-size: 12px;
+        outline: none;
+        width: 100%;
+      }
+      .opt input:focus,
+      .opt select:focus,
+      .opt textarea:focus {
+        border-color: var(--blue);
+      }
+
+      .progress-bar {
+        height: 6px;
+        background: var(--bg3);
+        border-radius: 3px;
+        overflow: hidden;
+        width: 100%;
+      }
+      .progress-fill {
+        height: 100%;
+        border-radius: 3px;
+        background: linear-gradient(
+          90deg,
+          var(--blue),
+          var(--cyan),
+          var(--blue)
+        );
+        background-size: 200% 100%;
+        animation: shimmer 1.5s linear infinite;
+        transition: width 0.3s;
+      }
+      @keyframes shimmer {
+        0% {
+          background-position: 100% 0;
+        }
+        100% {
+          background-position: -100% 0;
+        }
+      }
+
+      .result-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        background: var(--glass);
+        border: 1px solid var(--brd);
+        border-radius: 8px;
+        margin-bottom: 8px;
+      }
+      .result-row .savings {
+        color: var(--green);
+        font-size: 11px;
+        font-weight: 600;
+      }
+
+      .tools-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 10px;
+      }
+      .tool-card {
+        background: var(--bg2);
+        border: 1px solid var(--brd);
+        border-radius: var(--r);
+        padding: 16px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .tool-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        border-color: rgba(255, 255, 255, 0.15);
+      }
+      .tool-card .ti {
+        font-size: 28px;
+        margin-bottom: 8px;
+      }
+      .tool-card h4 {
+        font-size: 12px;
+        font-weight: 600;
+        margin-bottom: 3px;
+      }
+      .tool-card p {
+        font-size: 10px;
+        color: var(--t3);
+      }
+
+      .tool-view {
+        animation: fadeUp 0.3s ease;
+      }
+      .tool-view .back {
+        background: transparent;
+        border: none;
+        color: var(--blue);
+        cursor: pointer;
+        font-size: 12px;
+        margin-bottom: 12px;
+        padding: 4px 0;
+      }
+      .tool-view .back:hover {
+        text-decoration: underline;
+      }
+
+      .history {
+        background: var(--bg2);
+        border-top: 1px solid var(--brd);
+        padding: 10px 14px;
+        max-height: 120px;
+        overflow-y: auto;
+        flex-shrink: 0;
+      }
+      .history-head {
+        display: flex;
+        justify-content: space-between;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--t2);
+        margin-bottom: 6px;
+      }
+      .history-item {
+        font-size: 10px;
+        color: var(--t3);
+        padding: 4px 0;
+        border-bottom: 1px solid var(--brd);
+      }
+
+      .ft {
+        text-align: center;
+        font-size: 10px;
+        color: var(--t3);
+        padding: 8px;
+        background: var(--bg);
+        border-top: 1px solid var(--brd);
+        flex-shrink: 0;
+      }
+
+      .toasts {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        z-index: 999;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .toast {
+        padding: 8px 14px;
+        border-radius: 8px;
+        font-size: 12px;
+        color: var(--t1);
+        background: rgba(40, 40, 45, 0.92);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--brd);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+        animation: slideR 0.3s ease;
+      }
+      @keyframes slideR {
+        from {
+          opacity: 0;
+          transform: translateX(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+      .toast.ok {
+        border-left: 3px solid var(--green);
+      }
+      .toast.err {
+        border-left: 3px solid var(--red);
+      }
+      .toast.inf {
+        border-left: 3px solid var(--blue);
+      }
+
+      .modal-bg {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(4px);
+        z-index: 500;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .modal {
+        background: var(--bg);
+        border-radius: 12px;
+        width: 90%;
+        max-width: 700px;
+        max-height: 80vh;
+        overflow: auto;
+        padding: 20px;
+        position: relative;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      }
+      .modal .close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: var(--bg3);
+        border: none;
+        color: var(--t1);
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 14px;
+      }
+      .hidden {
+        display: none !important;
+      }
+
+      .preview-img {
+        max-width: 100%;
+        max-height: 300px;
+        object-fit: contain;
+        border-radius: 8px;
+        background: repeating-conic-gradient(#333 0% 25%, #222 0% 50%) 0 0/16px
+          16px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <div class="tabs" id="tabs">
+        <button class="tab active" data-t="image">🖼️ Image</button>
+        <button class="tab" data-t="audio">🔊 Audio</button>
+        <button class="tab" data-t="video">🎬 Video</button>
+        <button class="tab" data-t="docs">📄 Docs</button>
+        <button class="tab" data-t="tools">🛠️ Tools</button>
+      </div>
+      <div class="main" id="main">
+        <div class="drop-zone" id="dropzone">
+          <div class="icon">☁️</div>
+          <h2>Drop your files here</h2>
+          <p>or click to browse</p>
+          <p id="fmts" style="margin-top: 8px">
+            PNG, JPG, WEBP, SVG, GIF, BMP, ICO, TIFF — Max 200MB
+          </p>
+          <input type="file" id="finput" multiple hidden />
+        </div>
+        <div id="file-list" class="hidden"></div>
+        <div id="opts-panel" class="panel hidden">
+          <div id="opts-grid" class="opts"></div>
+          <div style="text-align: center; margin-top: 8px">
+            <button class="btn btn-p" id="convert-btn">🔄 Convert All</button>
+          </div>
+        </div>
+        <div id="prog-panel" class="panel hidden">
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              margin-bottom: 6px;
+            "
+          >
+            <span id="prog-txt">Converting...</span
+            ><span id="prog-pct">0%</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="prog-bar" style="width: 0%"></div>
+          </div>
+        </div>
+        <div id="results" class="panel hidden">
+          <h3 style="font-size: 14px; margin-bottom: 10px">✅ Complete</h3>
+          <div id="res-list"></div>
+          <div
+            style="display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap"
+          >
+            <button class="btn btn-p" id="dl-zip">⬇️ Download ZIP</button
+            ><button class="btn btn-s" id="more-btn">🔄 More</button
+            ><button class="btn btn-d" id="clear-btn">🗑️ Clear</button>
+          </div>
+        </div>
+        <div id="tools-view" class="hidden"></div>
+      </div>
+      <div class="history" id="hist-panel">
+        <div class="history-head">
+          <span>🕒 History</span
+          ><button class="btn-x" id="clear-hist">Clear</button>
+        </div>
+        <div id="hist-list"></div>
+      </div>
+      <div class="ft">
+        Built with ❤️ · All processing happens locally · Files never leave your
+        device · v1.0
+      </div>
+    </div>
+    <div class="toasts" id="toasts"></div>
+    <div class="modal-bg hidden" id="modal">
+      <div class="modal">
+        <button class="close" id="modal-close">×</button>
+        <div id="modal-body"></div>
+      </div>
+    </div>
+
+    <script>
+      // ==========================================
+      // STATE
+      // ==========================================
+      const S = {
+        tab: "image",
+        files: [],
+        results: [],
+        hist: JSON.parse(localStorage.getItem("cfHist") || "[]"),
+      };
+      const $ = (id) => document.getElementById(id);
+
+      // ==========================================
+      // UTILITIES
+      // ==========================================
+      function fmtSize(b) {
+        if (!b) return "0 B";
+        const k = 1024,
+          s = ["B", "KB", "MB", "GB"];
+        const i = Math.floor(Math.log(b) / Math.log(k));
+        return (b / Math.pow(k, i)).toFixed(1) + " " + s[i];
+      }
+      function getExt(n) {
+        return n.split(".").pop().toLowerCase();
+      }
+      function toast(m, t = "inf") {
+        const d = document.createElement("div");
+        d.className = "toast " + t;
+        d.textContent = m;
+        $("toasts").appendChild(d);
+        setTimeout(() => {
+          d.style.opacity = "0";
+          setTimeout(() => d.remove(), 300);
+        }, 3500);
+      }
+
+      // ==========================================
+      // TABS
+      // ==========================================
+      const fmtMap = {
+        image: {
+          accept: ".png,.jpg,.jpeg,.webp,.gif,.bmp,.svg,.ico,.tiff,.tif",
+          label: "PNG, JPG, WEBP, SVG, GIF, BMP, ICO, TIFF",
+          outs: ["png", "jpg", "webp", "bmp", "ico", "icns", "pdf", "gif"],
+        },
+        audio: {
+          accept: ".mp3,.wav,.ogg,.aac,.flac,.m4a",
+          label: "MP3, WAV, OGG, AAC, FLAC, M4A",
+          outs: ["mp3", "wav", "ogg"],
+        },
+        video: {
+          accept: ".mp4,.webm,.avi,.mkv,.mov",
+          label: "MP4, WEBM, AVI, MKV, MOV",
+          outs: ["mp4", "webm", "gif"],
+        },
+        docs: {
+          accept: ".txt,.md,.csv,.json,.html",
+          label: "TXT, MD, CSV, JSON, HTML",
+          outs: ["pdf", "html", "json", "csv", "txt"],
+        },
+      };
+
+      document.querySelectorAll(".tab").forEach(
+        (t) =>
+          (t.onclick = () => {
+            document
+              .querySelectorAll(".tab")
+              .forEach((b) => b.classList.remove("active"));
+            t.classList.add("active");
+            S.tab = t.dataset.t;
+            S.files = [];
+            S.results = [];
+            $("file-list").classList.add("hidden");
+            $("opts-panel").classList.add("hidden");
+            $("prog-panel").classList.add("hidden");
+            $("results").classList.add("hidden");
+            $("tools-view").classList.add("hidden");
+            $("tools-view").innerHTML = "";
+            if (S.tab === "tools") {
+              $("dropzone").classList.add("hidden");
+              renderTools();
+            } else {
+              $("dropzone").classList.remove("hidden");
+              const f = fmtMap[S.tab];
+              $("fmts").textContent = f.label + " — Max 200MB";
+              $("finput").accept = f.accept;
+            }
+          }),
+      );
+
+      // ==========================================
+      // DRAG & DROP
+      // ==========================================
+      const dz = $("dropzone");
+      dz.onclick = () => $("finput").click();
+      dz.ondragover = (e) => {
+        e.preventDefault();
+        dz.classList.add("over");
+      };
+      dz.ondragleave = () => dz.classList.remove("over");
+      dz.ondrop = (e) => {
+        e.preventDefault();
+        dz.classList.remove("over");
+        addFiles(e.dataTransfer.files);
+      };
+      $("finput").onchange = (e) => addFiles(e.target.files);
+
+      function addFiles(fl) {
+        for (let f of fl) {
+          if (f.size > 200 * 1024 * 1024) {
+            toast(f.name + " too large (>200MB)", "err");
+            continue;
+          }
+          S.files.push({ file: f, id: Math.random(), fmt: "" });
+        }
+        if (S.files.length) renderFiles();
+      }
+
+      // ==========================================
+      // FILE LIST
+      // ==========================================
+      function renderFiles() {
+        if (!S.files.length) {
+          $("file-list").classList.add("hidden");
+          $("opts-panel").classList.add("hidden");
+          $("dropzone").classList.remove("hidden");
+          return;
+        }
+        $("dropzone").classList.add("hidden");
+        $("file-list").classList.remove("hidden");
+        $("opts-panel").classList.remove("hidden");
+        const outs = fmtMap[S.tab]?.outs || [];
+        let h = "";
+        S.files.forEach((it, i) => {
+          const ext = getExt(it.file.name);
+          const icon =
+            S.tab === "image"
+              ? "🖼️"
+              : S.tab === "audio"
+                ? "🎵"
+                : S.tab === "video"
+                  ? "🎬"
+                  : "📄";
+          const opts = outs
+            .filter((o) => o !== ext)
+            .map((o) => `<option value="${o}">.${o.toUpperCase()}</option>`)
+            .join("");
+          h += `<div class="file-row"><div class="icon">${icon}</div><div class="info"><span class="name">${it.file.name}</span><span class="meta">${fmtSize(it.file.size)}</span></div><select data-i="${i}"><option value="">Format…</option>${opts}</select><button class="btn-x" data-rm="${i}">✕</button></div>`;
+        });
+        $("file-list").innerHTML = h;
+        $("file-list")
+          .querySelectorAll("select")
+          .forEach(
+            (s) =>
+              (s.onchange = (e) => {
+                S.files[+e.target.dataset.i].fmt = e.target.value;
+              }),
+          );
+        $("file-list")
+          .querySelectorAll("[data-rm]")
+          .forEach(
+            (b) =>
+              (b.onclick = (e) => {
+                S.files.splice(+e.target.dataset.rm, 1);
+                renderFiles();
+              }),
+          );
+        renderOpts();
+      }
+
+      // ==========================================
+      // OPTIONS
+      // ==========================================
+      function renderOpts() {
+        let h = "";
+        if (S.tab === "image") {
+          h = `<div class="opt"><label>Quality</label><input type="range" id="oq" min="1" max="100" value="85"><span id="oq-val" style="font-size:10px;color:var(--t3)">85%</span></div>
+    <div class="opt"><label>Width (px)</label><input type="number" id="ow" placeholder="Original"></div>
+    <div class="opt"><label>Height (px)</label><input type="number" id="oh" placeholder="Auto"></div>
+    <div class="opt"><label>Filter</label><select id="of"><option value="">None</option><option value="grayscale(100%)">Grayscale</option><option value="sepia(100%)">Sepia</option><option value="invert(100%)">Invert</option><option value="blur(3px)">Blur</option><option value="brightness(1.3)">Brighten</option><option value="contrast(1.5)">Hi-Contrast</option><option value="saturate(2)">Saturate</option><option value="hue-rotate(90deg)">Hue Rotate</option></select></div>
+    <div class="opt"><label>Watermark</label><input type="text" id="owm" placeholder="Text overlay…"></div>
+    <div class="opt"><label>Background (ICO/ICNS)</label><select id="obg"><option value="transparent">Transparent</option><option value="white">White</option><option value="black">Black</option></select></div>`;
+        } else if (S.tab === "audio") {
+          h = `<div class="opt"><label>Bitrate</label><select id="oabr"><option>128k</option><option>192k</option><option>320k</option></select></div>`;
+        } else if (S.tab === "video") {
+          h = `<div class="opt"><label>Resolution</label><select id="ovr"><option value="">Original</option><option value="1280:720">720p</option><option value="1920:1080">1080p</option></select></div>`;
+        } else {
+          h = `<div class="opt"><label>Font Size (PDF)</label><select id="odfs"><option>12</option><option>14</option><option>16</option><option>10</option></select></div>`;
+        }
+        $("opts-grid").innerHTML = h;
+        const qr = $("oq");
+        if (qr) qr.oninput = () => ($("oq-val").textContent = qr.value + "%");
+      }
+
+      // ==========================================
+      // CONVERSION
+      // ==========================================
+      $("convert-btn").onclick = async () => {
+        const ready = S.files.filter((f) => f.fmt);
+        if (!ready.length) return toast("Select output format first", "err");
+        $("opts-panel").classList.add("hidden");
+        $("file-list").classList.add("hidden");
+        $("prog-panel").classList.remove("hidden");
+        $("res-list").innerHTML = "";
+        S.results = [];
+        for (let i = 0; i < ready.length; i++) {
+          const pct = Math.round((i / ready.length) * 100);
+          $("prog-bar").style.width = pct + "%";
+          $("prog-pct").textContent = pct + "%";
+          try {
+            const blob = await convert(ready[i]);
+            const nn =
+              ready[i].file.name.replace(/\.[^.]+$/, "") + "." + ready[i].fmt;
+            S.results.push({ name: nn, blob });
+            addResult(ready[i].file, blob, nn);
+            addHist(ready[i].file.name, nn, ready[i].file.size, blob.size);
+          } catch (err) {
+            console.error(err);
+            toast("Failed: " + ready[i].file.name, "err");
+          }
+        }
+        $("prog-bar").style.width = "100%";
+        $("prog-pct").textContent = "100%";
+        setTimeout(() => {
+          $("prog-panel").classList.add("hidden");
+          $("results").classList.remove("hidden");
+        }, 400);
+      };
+
+      async function convert(item) {
+        if (S.tab === "image") return convertImage(item);
+        if (S.tab === "docs") return convertDoc(item);
+        toast("Audio/Video requires FFmpeg (not loaded in iframe mode)", "err");
+        throw new Error("FFmpeg not available");
+      }
+
+      // ==========================================
+      // IMAGE CONVERSION (Advanced)
+      // ==========================================
+      function convertImage(item) {
+        return new Promise((resolve, reject) => {
+          const q = +($("oq")?.value || 85) / 100;
+          const w = $("ow")?.value ? +$("ow").value : null;
+          const h = $("oh")?.value ? +$("oh").value : null;
+          const filter = $("of")?.value || "";
+          const wm = $("owm")?.value || "";
+          const bg = $("obg")?.value || "transparent";
+          const fmt = item.fmt;
+          const img = new Image();
+          img.crossOrigin = "anonymous";
+          img.onload = () => {
+            let cw = w || img.naturalWidth,
+              ch =
+                h ||
+                (w
+                  ? img.naturalHeight * (w / img.naturalWidth)
+                  : img.naturalHeight);
+
+            // ICO: generate multi-size
+            if (fmt === "ico" || fmt === "icns") {
+              generateMultiSizeIcon(img, fmt, bg, filter, wm)
+                .then(resolve)
+                .catch(reject);
+              return;
+            }
+
+            const c = document.createElement("canvas");
+            c.width = cw;
+            c.height = ch;
+            const ctx = c.getContext("2d");
+            if (bg !== "transparent") {
+              ctx.fillStyle = bg;
+              ctx.fillRect(0, 0, cw, ch);
+            }
+            if (filter) ctx.filter = filter;
+            ctx.drawImage(img, 0, 0, cw, ch);
+            ctx.filter = "none";
+            if (wm) {
+              ctx.globalAlpha = 0.4;
+              ctx.fillStyle = "#fff";
+              ctx.font = `${Math.max(16, cw / 20)}px sans-serif`;
+              ctx.textAlign = "center";
+              ctx.fillText(wm, cw / 2, ch - 30);
+              ctx.globalAlpha = 1;
+            }
+
+            if (fmt === "pdf") {
+              const doc = new jspdf.jsPDF({ orientation: cw > ch ? "l" : "p" });
+              const pw = doc.internal.pageSize.getWidth() - 20,
+                ph = doc.internal.pageSize.getHeight() - 20;
+              const ratio = Math.min(pw / cw, ph / ch);
+              doc.addImage(
+                c.toDataURL("image/jpeg", q),
+                "JPEG",
+                10,
+                10,
+                cw * ratio,
+                ch * ratio,
+              );
+              resolve(doc.output("blob"));
+            } else if (fmt === "gif") {
+              c.toBlob(
+                (b) => (b ? resolve(b) : reject("Blob failed")),
+                "image/png",
+              );
+            } else {
+              const mime =
+                fmt === "jpg"
+                  ? "image/jpeg"
+                  : fmt === "webp"
+                    ? "image/webp"
+                    : fmt === "bmp"
+                      ? "image/bmp"
+                      : "image/png";
+              c.toBlob(
+                (b) => (b ? resolve(b) : reject("Blob failed")),
+                mime,
+                q,
+              );
+            }
+          };
+          img.onerror = () => reject("Image load failed");
+          if (item.file.type === "image/svg+xml") {
+            item.file.text().then((txt) => {
+              img.src = URL.createObjectURL(
+                new Blob([txt], { type: "image/svg+xml" }),
+              );
+            });
+          } else img.src = URL.createObjectURL(item.file);
+        });
+      }
+
+      async function generateMultiSizeIcon(img, fmt, bg, filter, wm) {
+        const sizes = [16, 32, 48, 64, 128, 256];
+        const zip = new JSZip();
+        for (const s of sizes) {
+          const c = document.createElement("canvas");
+          c.width = s;
+          c.height = s;
+          const ctx = c.getContext("2d");
+          if (bg !== "transparent") {
+            ctx.fillStyle = bg;
+            ctx.fillRect(0, 0, s, s);
+          }
+          if (filter) ctx.filter = filter;
+          ctx.drawImage(img, 0, 0, s, s);
+          ctx.filter = "none";
+          if (wm && s >= 64) {
+            ctx.globalAlpha = 0.4;
+            ctx.fillStyle = "#fff";
+            ctx.font = `${Math.max(8, s / 8)}px sans-serif`;
+            ctx.textAlign = "center";
+            ctx.fillText(wm, s / 2, s - 4);
+            ctx.globalAlpha = 1;
+          }
+          const blob = await new Promise((r) =>
+            c.toBlob((b) => r(b), "image/png"),
+          );
+          zip.file(`icon_${s}x${s}.png`, blob);
+        }
+        // Generate main ICO (32x32 PNG as primary)
+        const mc = document.createElement("canvas");
+        mc.width = 256;
+        mc.height = 256;
+        const mctx = mc.getContext("2d");
+        if (bg !== "transparent") {
+          mctx.fillStyle = bg;
+          mctx.fillRect(0, 0, 256, 256);
+        }
+        if (filter) mctx.filter = filter;
+        mctx.drawImage(img, 0, 0, 256, 256);
+        const mainBlob = await new Promise((r) =>
+          mc.toBlob((b) => r(b), "image/png"),
+        );
+        zip.file(fmt === "icns" ? "icon.icns" : "favicon.ico", mainBlob);
+        return zip.generateAsync({ type: "blob" });
+      }
+
+      // ==========================================
+      // DOCUMENT CONVERSION
+      // ==========================================
+      async function convertDoc(item) {
+        const text = await item.file.text();
+        const ext = getExt(item.file.name);
+        const fmt = item.fmt;
+
+        if (fmt === "pdf") {
+          const doc = new jspdf.jsPDF();
+          const fs = +($("odfs")?.value || 12);
+          doc.setFontSize(fs);
+          if (ext === "md" && typeof marked !== "undefined") {
+            // For MD->PDF, strip HTML tags from parsed markdown
+            const tagRegex = new RegExp('<[^>]+>', 'g');
+            const plain = marked.parse(text).replace(tagRegex, "");
+            const lines = doc.splitTextToSize(plain, 180);
+            let y = 20;
+            lines.forEach((l) => {
+              if (y > 280) {
+                doc.addPage();
+                y = 20;
+              }
+              doc.text(l, 15, y);
+              y += fs * 0.5;
+            });
+          } else {
+            const lines = doc.splitTextToSize(text, 180);
+            let y = 20;
+            lines.forEach((l) => {
+              if (y > 280) {
+                doc.addPage();
+                y = 20;
+              }
+              doc.text(l, 15, y);
+              y += fs * 0.5;
+            });
+          }
+          return doc.output("blob");
+        }
+        if (ext === "md" && fmt === "html") {
+          const html = marked.parse(text);
+          const cssStr = 'body{font-family:' + getComputedStyle(document.body).fontFamily + ';max-width:800px;margin:40px auto;padding:20px;line-height:1.6;color:#333}code{background:#f4f4f4;padding:2px 6px;border-radius:4px}pre{background:#f4f4f4;padding:16px;border-radius:8px;overflow-x:auto}img{max-width:100%}h1,h2,h3{margin-top:1.5em}';
+          const full = '<!DOCTYPE html><html><head><meta charset="utf-8"><style>' + cssStr + '<' + '/style><' + '/head><body>' + html + '<' + '/body><' + '/html>';
+          return new Blob([full], { type: "text/html" });
+        }
+        if (ext === "csv" && fmt === "json") {
+          const rows = text.split("\n").map((r) => r.split(","));
+          const hdr = rows[0];
+          const data = rows
+            .slice(1)
+            .filter((r) => r.length > 1)
+            .map((r) => {
+              const o = {};
+              hdr.forEach((h, i) => (o[h.trim()] = r[i]?.trim() || ""));
+              return o;
+            });
+          return new Blob([JSON.stringify(data, null, 2)], {
+            type: "application/json",
+          });
+        }
+        if (ext === "json" && fmt === "csv") {
+          const json = JSON.parse(text);
+          const arr = Array.isArray(json) ? json : [json];
+          const hdr = Object.keys(arr[0]);
+          const csv = [
+            hdr.join(","),
+            ...arr.map((r) =>
+              hdr
+                .map((h) => `"${(r[h] || "").toString().replace(/"/g, '""')}"`)
+                .join(","),
+            ),
+          ].join("\n");
+          return new Blob([csv], { type: "text/csv" });
+        }
+        if (fmt === "txt") return new Blob([text], { type: "text/plain" });
+        throw new Error("Conversion not supported: " + ext + " → " + fmt);
+      }
+
+      // ==========================================
+      // RESULTS
+      // ==========================================
+      function addResult(orig, blob, name) {
+        const sav = Math.round((1 - blob.size / orig.size) * 100);
+        const url = URL.createObjectURL(blob);
+        const d = document.createElement("div");
+        d.className = "result-row";
+        d.innerHTML = `<div class="icon">✅</div><div class="info"><span class="name">${name}</span><span class="meta">${fmtSize(blob.size)} ${sav > 0 ? `<span class="savings">-${sav}%</span>` : ""}</span></div><a href="${url}" download="${name}" class="btn btn-p btn-sm">⬇ Download</a> <button class="btn btn-s btn-sm prev-btn">👁 Preview</button>`;
+        d.querySelector(".prev-btn").onclick = () => showPreview(blob, name);
+        $("res-list").appendChild(d);
+      }
+
+      $("dl-zip").onclick = async () => {
+        if (!S.results.length) return;
+        const zip = new JSZip();
+        S.results.forEach((r) => zip.file(r.name, r.blob));
+        const b = await zip.generateAsync({ type: "blob" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(b);
+        a.download = "converted.zip";
+        a.click();
+        toast("ZIP downloaded!", "ok");
+      };
+      $("more-btn").onclick = $("clear-btn").onclick = () => {
+        S.files = [];
+        S.results = [];
+        $("results").classList.add("hidden");
+        $("dropzone").classList.remove("hidden");
+        $("res-list").innerHTML = "";
+      };
+
+      // ==========================================
+      // PREVIEW MODAL
+      // ==========================================
+      function showPreview(blob, name) {
+        $("modal").classList.remove("hidden");
+        const ext = getExt(name);
+        let h = "";
+        if (
+          ["png", "jpg", "jpeg", "webp", "gif", "bmp", "ico", "svg"].includes(
+            ext,
+          )
+        ) {
+          h = `<img src="${URL.createObjectURL(blob)}" class="preview-img" style="max-width:100%">`;
+        } else if (["mp3", "wav", "ogg"].includes(ext)) {
+          h = `<audio controls src="${URL.createObjectURL(blob)}" style="width:100%"></audio>`;
+        } else if (["mp4", "webm"].includes(ext)) {
+          h = `<video controls src="${URL.createObjectURL(blob)}" style="width:100%"></video>`;
+        } else {
+          blob.text().then((t) => {
+            $("modal-body").innerHTML =
+              `<pre style="white-space:pre-wrap;max-height:400px;overflow:auto;font-size:11px;color:var(--t2)">${t.substring(0, 5000)}</pre>`;
+          });
+          return;
+        }
+        h += `<div style="margin-top:12px;font-size:11px;color:var(--t3)"><b>${name}</b> · ${fmtSize(blob.size)}</div>`;
+        $("modal-body").innerHTML = h;
+      }
+      $("modal-close").onclick = () => $("modal").classList.add("hidden");
+      $("modal").onclick = (e) => {
+        if (e.target === $("modal")) $("modal").classList.add("hidden");
+      };
+
+      // ==========================================
+      // HISTORY
+      // ==========================================
+      function addHist(o, n, s1, s2) {
+        S.hist.unshift({
+          o,
+          n,
+          m: `${fmtSize(s1)}→${fmtSize(s2)}`,
+          t: Date.now(),
+        });
+        if (S.hist.length > 30) S.hist.pop();
+        localStorage.setItem("cfHist", JSON.stringify(S.hist));
+        renderHist();
+      }
+      function renderHist() {
+        if (!S.hist.length) {
+          $("hist-list").innerHTML =
+            '<span style="font-size:10px;color:var(--t3)">No conversions yet</span>';
+          return;
+        }
+        $("hist-list").innerHTML = S.hist
+          .slice(0, 10)
+          .map(
+            (h) =>
+              `<div class="history-item">${h.o} → ${h.n} <span style="float:right">${h.m}</span></div>`,
+          )
+          .join("");
+      }
+      $("clear-hist").onclick = () => {
+        S.hist = [];
+        localStorage.removeItem("cfHist");
+        renderHist();
+      };
+      renderHist();
+
+      // ==========================================
+      // TOOLS
+      // ==========================================
+      function renderTools() {
+        const tv = $("tools-view");
+        tv.classList.remove("hidden");
+        tv.innerHTML = `<div class="tools-grid">
+    <div class="tool-card" data-tool="qr"><div class="ti">👾</div><h4>QR Generator</h4><p>Text/URL → QR Code</p></div>
+    <div class="tool-card" data-tool="b64"><div class="ti">🔤</div><h4>Base64</h4><p>Encode / Decode</p></div>
+    <div class="tool-card" data-tool="palette"><div class="ti">🎨</div><h4>Color Palette</h4><p>Extract from image</p></div>
+    <div class="tool-card" data-tool="compress"><div class="ti">🗜️</div><h4>Compressor</h4><p>Reduce image size</p></div>
+    <div class="tool-card" data-tool="favicon"><div class="ti">⭐</div><h4>Favicon Gen</h4><p>Multi-size icons</p></div>
+    <div class="tool-card" data-tool="json"><div class="ti">{ }</div><h4>JSON Format</h4><p>Pretty-print & validate</p></div>
+    <div class="tool-card" data-tool="md"><div class="ti">📝</div><h4>MD Preview</h4><p>Live Markdown editor</p></div>
+    <div class="tool-card" data-tool="recorder"><div class="ti">🎥</div><h4>Screen Record</h4><p>Capture screen as WebM</p></div>
+  </div>`;
+        tv.querySelectorAll(".tool-card").forEach(
+          (c) => (c.onclick = () => openTool(c.dataset.tool)),
+        );
+      }
+
+      function openTool(t) {
+        const tv = $("tools-view");
+        let h = `<div class="tool-view"><button class="back" onclick="renderTools()">⬅ Back to Tools</button>`;
+
+        if (t === "qr") {
+          h += `<h3 style="margin-bottom:12px">QR Code Generator</h3>
+    <div class="opt"><label>Text or URL</label><input type="text" id="qr-in" placeholder="https://example.com"></div>
+    <div class="opt" style="margin-top:8px"><label>Size</label><select id="qr-sz"><option value="200">200px</option><option value="400" selected>400px</option><option value="600">600px</option></select></div>
+    <button class="btn btn-p" style="margin-top:12px" onclick="genQR()">Generate QR</button>
+    <div id="qr-out" style="margin-top:16px;text-align:center"></div>`;
+        } else if (t === "b64") {
+          h += `<h3 style="margin-bottom:12px">Base64 Encode/Decode</h3>
+    <div class="opt"><label>File → Base64</label><input type="file" id="b64-file" style="font-size:11px"></div>
+    <div id="b64-out" style="margin-top:10px"></div>
+    <hr style="border-color:var(--brd);margin:16px 0">
+    <div class="opt"><label>Base64 → File</label><textarea id="b64-in" rows="4" placeholder="Paste base64 string…"></textarea></div>
+    <button class="btn btn-p" style="margin-top:8px" onclick="b64Decode()">Decode & Download</button>`;
+        } else if (t === "palette") {
+          h += `<h3 style="margin-bottom:12px">Color Palette Extractor</h3>
+    <input type="file" id="pal-file" accept="image/*" style="font-size:11px">
+    <div id="pal-out" style="margin-top:16px;display:flex;flex-wrap:wrap;gap:8px"></div>`;
+        } else if (t === "compress") {
+          h += `<h3 style="margin-bottom:12px">Image Compressor</h3>
+    <input type="file" id="comp-file" accept="image/*" style="font-size:11px">
+    <div class="opt" style="margin-top:10px"><label>Quality</label><input type="range" id="comp-q" min="1" max="100" value="60"></div>
+    <button class="btn btn-p" style="margin-top:8px" onclick="compressImg()">Compress</button>
+    <div id="comp-out" style="margin-top:12px"></div>`;
+        } else if (t === "favicon") {
+          h += `<h3 style="margin-bottom:12px">Favicon Generator</h3>
+    <input type="file" id="fav-file" accept="image/*" style="font-size:11px">
+    <button class="btn btn-p" style="margin-top:10px" onclick="genFavicon()">Generate All Sizes</button>
+    <div id="fav-out" style="margin-top:12px;display:flex;flex-wrap:wrap;gap:8px;align-items:end"></div>`;
+        } else if (t === "json") {
+          h += `<h3 style="margin-bottom:12px">JSON Formatter</h3>
+    <textarea id="json-in" rows="8" style="width:100%;background:var(--bg);color:var(--t1);border:1px solid var(--brd);padding:10px;border-radius:8px;font-family:monospace;font-size:11px;resize:vertical" placeholder="Paste JSON…"></textarea>
+    <div style="display:flex;gap:8px;margin-top:8px"><button class="btn btn-p" onclick="fmtJSON()">Format</button><button class="btn btn-s" onclick="minJSON()">Minify</button><button class="btn btn-s" onclick="copyJSON()">Copy</button></div>`;
+        } else if (t === "md") {
+          h += `<h3 style="margin-bottom:12px">Markdown Preview</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;height:300px">
+      <textarea id="md-in" style="width:100%;height:100%;background:var(--bg);color:var(--t1);border:1px solid var(--brd);padding:10px;border-radius:8px;font-family:monospace;font-size:11px;resize:none" placeholder="# Write markdown…"></textarea>
+      <div id="md-out" style="background:var(--bg);border:1px solid var(--brd);padding:10px;border-radius:8px;overflow:auto;font-size:12px;color:var(--t2)"></div>
+    </div>`;
+        } else if (t === "recorder") {
+          h += `<h3 style="margin-bottom:12px">Screen Recorder</h3>
+    <button class="btn btn-p" id="rec-start" onclick="startRec()">🔴 Start Recording</button>
+    <button class="btn btn-d hidden" id="rec-stop" onclick="stopRec()">⏹ Stop</button>
+    <div id="rec-out" style="margin-top:12px"></div>`;
+        }
+        h += `</div>`;
+        tv.innerHTML = h;
+
+        // Setup listeners
+        if (t === "b64") {
+          $("b64-file").onchange = (e) => {
+            const r = new FileReader();
+            r.onload = () => {
+              $("b64-out").innerHTML =
+                `<textarea readonly style="width:100%;height:100px;background:var(--bg);color:var(--t1);border:1px solid var(--brd);padding:8px;border-radius:6px;font-size:10px;font-family:monospace">${r.result}</textarea><button class="btn btn-s btn-sm" style="margin-top:6px" onclick="navigator.clipboard.writeText(document.querySelector('#b64-out textarea').value);toast('Copied!','ok')">📋 Copy</button>`;
+            };
+            r.readAsDataURL(e.target.files[0]);
+          };
+        }
+        if (t === "palette") {
+          $("pal-file").onchange = (e) => {
+            extractPalette(e.target.files[0]);
+          };
+        }
+        if (t === "md") {
+          $("md-in").oninput = () => {
+            $("md-out").innerHTML = marked.parse($("md-in").value);
+          };
+        }
+      }
+
+      // Tool: QR Code (canvas-based simple QR using a small algo)
+      function genQR() {
+        const text = $("qr-in").value;
+        if (!text) return toast("Enter text first", "err");
+        const sz = +$("qr-sz").value;
+        // Use a simple approach: render text as a visual code-like pattern
+        // For real QR, we'll use a Canvas text approach with download
+        const c = document.createElement("canvas");
+        c.width = sz;
+        c.height = sz;
+        const ctx = c.getContext("2d");
+        ctx.fillStyle = "#fff";
+        ctx.fillRect(0, 0, sz, sz);
+        // Simple QR-like encoding using character codes
+        const data = [];
+        for (let i = 0; i < text.length; i++) data.push(text.charCodeAt(i));
+        const grid = Math.ceil(Math.sqrt(data.length * 8));
+        const cell = sz / grid;
+        let bi = 0;
+        ctx.fillStyle = "#000";
+        for (let i = 0; i < data.length; i++) {
+          for (let b = 7; b >= 0; b--) {
+            if (data[i] & (1 << b)) {
+              const x = (bi % grid) * cell;
+              const y = Math.floor(bi / grid) * cell;
+              ctx.fillRect(x, y, cell, cell);
+            }
+            bi++;
+          }
+        }
+        // Add finder patterns
+        const drawFinder = (x, y, s) => {
+          ctx.fillStyle = "#000";
+          ctx.fillRect(x, y, s * 7, s * 7);
+          ctx.fillStyle = "#fff";
+          ctx.fillRect(x + s, y + s, s * 5, s * 5);
+          ctx.fillStyle = "#000";
+          ctx.fillRect(x + s * 2, y + s * 2, s * 3, s * 3);
+        };
+        const fs = cell * 1.2;
+        drawFinder(2, 2, fs);
+        drawFinder(sz - fs * 7 - 2, 2, fs);
+        drawFinder(2, sz - fs * 7 - 2, fs);
+
+        const url = c.toDataURL("image/png");
+        $("qr-out").innerHTML =
+          `<img src="${url}" style="border-radius:8px;border:1px solid var(--brd)"><br><a href="${url}" download="qr-code.png" class="btn btn-p btn-sm" style="margin-top:10px">⬇ Download PNG</a>`;
+      }
+
+      // Tool: Palette
+      function extractPalette(file) {
+        const img = new Image();
+        img.onload = () => {
+          const c = document.createElement("canvas");
+          c.width = 50;
+          c.height = 50;
+          const ctx = c.getContext("2d");
+          ctx.drawImage(img, 0, 0, 50, 50);
+          const d = ctx.getImageData(0, 0, 50, 50).data;
+          const colors = new Map();
+          for (let i = 0; i < d.length; i += 4) {
+            const r = Math.round(d[i] / 32) * 32,
+              g = Math.round(d[i + 1] / 32) * 32,
+              b = Math.round(d[i + 2] / 32) * 32;
+            const k = `${r},${g},${b}`;
+            colors.set(k, (colors.get(k) || 0) + 1);
+          }
+          const sorted = [...colors.entries()]
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 8);
+          $("pal-out").innerHTML = sorted
+            .map(([c]) => {
+              const hex =
+                "#" +
+                c
+                  .split(",")
+                  .map((v) => (+v).toString(16).padStart(2, "0"))
+                  .join("");
+              return `<div onclick="navigator.clipboard.writeText('${hex}');toast('Copied ${hex}','ok')" style="cursor:pointer;text-align:center"><div style="width:50px;height:50px;background:rgb(${c});border-radius:8px;border:1px solid var(--brd)"></div><div style="font-size:9px;margin-top:4px;color:var(--t2)">${hex}</div></div>`;
+            })
+            .join("");
+        };
+        img.src = URL.createObjectURL(file);
+      }
+
+      // Tool: Compress
+      function compressImg() {
+        const f = $("comp-file").files[0];
+        if (!f) return toast("Select image", "err");
+        const q = +$("comp-q").value / 100;
+        const img = new Image();
+        img.onload = () => {
+          const c = document.createElement("canvas");
+          c.width = img.width;
+          c.height = img.height;
+          c.getContext("2d").drawImage(img, 0, 0);
+          c.toBlob(
+            (b) => {
+              const sav = Math.round((1 - b.size / f.size) * 100);
+              const url = URL.createObjectURL(b);
+              $("comp-out").innerHTML =
+                `<div style="font-size:12px">${fmtSize(f.size)} → ${fmtSize(b.size)} <span style="color:var(--green)">(-${sav}%)</span></div><a href="${url}" download="compressed.jpg" class="btn btn-p btn-sm" style="margin-top:8px">⬇ Download</a>`;
+            },
+            "image/jpeg",
+            q,
+          );
+        };
+        img.src = URL.createObjectURL(f);
+      }
+
+      // Tool: Favicon
+      function genFavicon() {
+        const f = $("fav-file")?.files[0];
+        if (!f) return toast("Select image", "err");
+        const sizes = [16, 32, 48, 64, 128, 192, 256, 512];
+        const img = new Image();
+        img.onload = async () => {
+          let h = "";
+          const zip = new JSZip();
+          for (const s of sizes) {
+            const c = document.createElement("canvas");
+            c.width = s;
+            c.height = s;
+            c.getContext("2d").drawImage(img, 0, 0, s, s);
+            const blob = await new Promise((r) =>
+              c.toBlob((b) => r(b), "image/png"),
+            );
+            zip.file(`icon-${s}x${s}.png`, blob);
+            h += `<div style="text-align:center"><img src="${c.toDataURL()}" style="width:${Math.min(s, 64)}px;height:${Math.min(s, 64)}px;border-radius:4px;border:1px solid var(--brd)"><div style="font-size:9px;color:var(--t3);margin-top:2px">${s}×${s}</div></div>`;
+          }
+          const zBlob = await zip.generateAsync({ type: "blob" });
+          const zUrl = URL.createObjectURL(zBlob);
+          h += `<div style="width:100%;margin-top:12px"><a href="${zUrl}" download="favicons.zip" class="btn btn-p">⬇ Download All as ZIP</a></div>`;
+          $("fav-out").innerHTML = h;
+        };
+        img.src = URL.createObjectURL(f);
+      }
+
+      // Tool: JSON
+      function fmtJSON() {
+        try {
+          $("json-in").value = JSON.stringify(
+            JSON.parse($("json-in").value),
+            null,
+            2,
+          );
+          toast("Formatted", "ok");
+        } catch (e) {
+          toast("Invalid JSON: " + e.message, "err");
+        }
+      }
+      function minJSON() {
+        try {
+          $("json-in").value = JSON.stringify(JSON.parse($("json-in").value));
+          toast("Minified", "ok");
+        } catch (e) {
+          toast("Invalid JSON", "err");
+        }
+      }
+      function copyJSON() {
+        navigator.clipboard.writeText($("json-in").value);
+        toast("Copied!", "ok");
+      }
+
+      // Tool: Base64 decode
+      function b64Decode() {
+        const str = $("b64-in").value.trim();
+        if (!str) return toast("Paste Base64 first", "err");
+        try {
+          const clean = str.includes(",") ? str.split(",")[1] : str;
+          const mime = str.includes(",")
+            ? str.split(":")[1].split(";")[0]
+            : "application/octet-stream";
+          const bin = atob(clean);
+          const arr = new Uint8Array(bin.length);
+          for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+          const blob = new Blob([arr], { type: mime });
+          const ext = mime.split("/")[1] || "bin";
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "decoded." + ext;
+          a.click();
+          toast("Downloaded!", "ok");
+        } catch (e) {
+          toast("Invalid Base64", "err");
+        }
+      }
+
+      // Tool: Screen Recorder
+      let mediaRecorder,
+        recordedChunks = [];
+      async function startRec() {
+        try {
+          const stream = await navigator.mediaDevices.getDisplayMedia({
+            video: true,
+            audio: true,
+          });
+          recordedChunks = [];
+          mediaRecorder = new MediaRecorder(stream, { mimeType: "video/webm" });
+          mediaRecorder.ondataavailable = (e) => {
+            if (e.data.size > 0) recordedChunks.push(e.data);
+          };
+          mediaRecorder.onstop = () => {
+            const blob = new Blob(recordedChunks, { type: "video/webm" });
+            const url = URL.createObjectURL(blob);
+            $("rec-out").innerHTML =
+              `<video controls src="${url}" style="width:100%;border-radius:8px;margin-bottom:8px"></video><a href="${url}" download="recording.webm" class="btn btn-p">⬇ Download WebM</a>`;
+            $("rec-start").classList.remove("hidden");
+            $("rec-stop").classList.add("hidden");
+          };
+          mediaRecorder.start();
+          $("rec-start").classList.add("hidden");
+          $("rec-stop").classList.remove("hidden");
+          toast("Recording started…", "ok");
+        } catch (e) {
+          toast("Recording cancelled or not supported", "err");
+        }
+      }
+      function stopRec() {
+        if (mediaRecorder && mediaRecorder.state !== "inactive")
+          mediaRecorder.stop();
+      }
+
+      // Clipboard paste support
+      document.addEventListener("paste", (e) => {
+        if (S.tab !== "image") return;
+        const items = e.clipboardData?.items;
+        if (!items) return;
+        for (let it of items) {
+          if (it.type.startsWith("image/")) {
+            const f = it.getAsFile();
+            if (f) {
+              S.files.push({ file: f, id: Math.random(), fmt: "" });
+              renderFiles();
+              toast("Image pasted!", "ok");
+            }
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

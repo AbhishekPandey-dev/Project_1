@@ -117,6 +117,10 @@ if (macWindow) {
   if (calculatorIcon) {
     calculatorIcon.addEventListener('click', () => openMacWindow('Calculator', 'assets/componets/calculator.html'));
   }
+  const converterIcon = document.getElementById('converter-app-icon');
+  if (converterIcon) {
+    converterIcon.addEventListener('click', () => openMacWindow('Converter', 'assets/componets/converter.html'));
+  }
 
   // Close window
   closeBtn.addEventListener('click', () => {
