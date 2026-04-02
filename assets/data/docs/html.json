@@ -1,42 +1,324 @@
 {
   "language": "HTML",
-  "meaning": "HyperText Markup Language",
-  "function": "Used to structure web pages and its content.",
-  "useCase": "Building the skeleton of website structures, layout blocks, texts, images, and links.",
+  "meaning": "Web Page Structure Language",
+  "function": "HTML defines the structure and content of web pages using a system of nested elements and tags.",
+  "useCase": "Used to build every webpage on the internet — from simple static pages to the structural backbone of complex web applications.",
   "definition": {
-    "en": "HTML is the standard markup language for documents designed to be displayed in a web browser. It defines the meaning and structure of web content.",
-    "hi": "HTML ek markup language hai jisse hum websites ka structure (dhacha) banate hain. Jaise ghar banane ke liye eent (bricks) chahiye, waise hi website ka skeleton start karne ke liye HTML chahiye."
+    "en": "HTML (HyperText Markup Language) is the standard markup language for creating web pages. It uses a tree of elements represented by tags to describe the structure, content, and meaning of web content.",
+    "hi": "Bhai, HTML matlab HyperText Markup Language — ye basically teri website ka dhaancha hai, jaise ghar banane mein pehle skeleton banta hai na? Bas wahi kaam karta hai HTML. Har cheez — heading, paragraph, image, button — sab HTML ke tags mein lipta hua hota hai, ekdum lep ke paratha style!"
   },
   "attributesList": [
     {
-      "name": "class",
-      "explanation_en": "Specifies one or more class names for an element (used to point to a class in a given style sheet).",
-      "explanation_hi": "Bhai, class use hota hai elements ko ek group me daalne ke liye taki CSS se hum ek sath sabki styling kar sakein. Same class multiple elements ko de sakte ho.",
-      "example_code": "<div class=\"super-button\">\n  Click me!\n</div>"
+      "name": "DOCTYPE Declaration",
+      "explanation_en": "The <!DOCTYPE html> declaration must be the very first line of an HTML document. It tells the browser which version of HTML is being used — in modern web dev, this always refers to HTML5.",
+      "explanation_hi": "Bhai ye line waisi hi hai jaise exam paper ke upar naam aur roll number likhna zaroori hota hai. <!DOCTYPE html> browser ko batata hai — 'yaar, ye HTML5 ka document hai, theek se padhna'. Ye bhoologe toh browser confuse ho jaayega, jaise bina address ke courier bhejna.",
+      "example_code": "<!DOCTYPE html>\n<html lang=\"en\">\n  <head></head>\n  <body></body>\n</html>"
     },
     {
-      "name": "id",
-      "explanation_en": "Specifies a unique id for an element. Used for CSS styling or JavaScript identification.",
-      "explanation_hi": "ID bilkul aapke Aadhar card number ki tarah hai. Ek page pe ek ID sirf ek hi element pe use ho sakti hai. Ye mostly JavaScript se specific element pakadne ke liye use hoti hai.",
-      "example_code": "<p id=\"main-para\">\n  This paragraph is unique!\n</p>"
+      "name": "<html> Root Element",
+      "explanation_en": "The <html> element is the root element that wraps all content on the page. The lang attribute specifies the language of the document, which aids accessibility and SEO.",
+      "explanation_hi": "Scene ye hai ki <html> tag poori website ka baap hai — sab kuch iske andar hota hai. lang attribute daalna mat bhoolo, yaar — screen readers aur Google dono ko samajh aata hai ki content kis language mein hai. Jaise ghar ke bahar nameplate hoti hai, waise.",
+      "example_code": "<html lang=\"en\">\n  <!-- All page content goes here -->\n</html>"
     },
     {
-      "name": "href",
-      "explanation_en": "Specifies the URL of the page the link goes to (used specifically inside <a> tags).",
-      "explanation_hi": "href ka matlab hai 'hypertext reference'. Jab tum kisi link (<a> tag) par click karte ho, toh ye tumko kis link pe le jaayega, wo target hum href me daalte hain.",
-      "example_code": "<a href=\"https://google.com\">\n  Go to Google\n</a>"
+      "name": "<head> Element",
+      "explanation_en": "The <head> element contains metadata about the document — information that is not displayed on the page itself, such as the title, character encoding, stylesheets, and scripts.",
+      "explanation_hi": "Bhai <head> woh backstage area hai jahan saari setting hoti hai — audience ko dikhta nahi par show chalata hai. Title, CSS links, fonts, SEO tags — sab idhar chhup ke kaam karte hain. Exactly jaise movie ka director hota hai — screen pe nahi aata par poori film uski hoti hai.",
+      "example_code": "<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>My Page</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>"
     },
     {
-      "name": "src",
-      "explanation_en": "Specifies the path to the media or external file (like images, iframes, or scripts).",
-      "explanation_hi": "src stands for source. Image file kahan se uthani hai ya fir script file kahan rakhi hai path me, wo location hum src attribute me dete hain.",
-      "example_code": "<img src=\"profile.jpg\" alt=\"My Photo\">\n<script src=\"app.js\"></script>"
+      "name": "<body> Element",
+      "explanation_en": "The <body> element contains all the visible content of the web page — text, images, links, buttons, forms, and everything the user actually sees and interacts with.",
+      "explanation_hi": "Agar <head> backstage hai toh <body> stage hai yaar — jo kuch user ko dikhna hai, sab idhar aata hai. Paragraphs, images, buttons, forms — poori duniya <body> ke andar. Jaise ghar mein drawing room hota hai — wahan sab baithe rehte hain.",
+      "example_code": "<body>\n  <h1>Welcome!</h1>\n  <p>This is visible content.</p>\n</body>"
     },
     {
-      "name": "style",
-      "explanation_en": "Used to add inline CSS styles over an element, such as color, font, size, etc.",
-      "explanation_hi": "Agar tumhe direct us hi HTML line me design (CSS) lagani ho, toh style attribute ka use karte hain. Isko Inline styling bolte hain.",
-      "example_code": "<h1 style=\"color: red; padding: 10px;\">\n  Red text with padding!\n</h1>"
+      "name": "Heading Tags (h1–h6)",
+      "explanation_en": "HTML provides six levels of headings from <h1> (most important) to <h6> (least important). <h1> should be used once per page for the main topic; headings create a semantic document outline.",
+      "explanation_hi": "Bhai h1 se h6 matlab headings ki IAS to peon hierarchy hai. h1 sab se bada boss — ek page pe ek hi hona chahiye, like main hero. h2 supporting actor, h3 character actor... h6 tak aate aate toh almost extra ho jaata hai. SEO ke liye bhi important hai, Google inhe padhke samajhta hai page kya hai.",
+      "example_code": "<h1>Main Page Title</h1>\n<h2>Section Heading</h2>\n<h3>Subsection</h3>\n<h4>Sub-subsection</h4>"
+    },
+    {
+      "name": "<p> Paragraph Tag",
+      "explanation_en": "The <p> element defines a paragraph of text. Browsers automatically add space before and after paragraphs. It is a block-level element.",
+      "explanation_hi": "Yaar <p> tag matlab paragraph — jaise essay mein naya paragraph start karte ho na, waise. Browser khud hi upar-neeche thodi si jagah de deta hai, tujhe manually space nahi daalna. Simple, seedha, no drama.",
+      "example_code": "<p>This is a paragraph of text on the webpage.</p>\n<p>This is another separate paragraph.</p>"
+    },
+    {
+      "name": "<a> Anchor / Hyperlink Tag",
+      "explanation_en": "The <a> element creates hyperlinks using the href attribute to specify the destination URL. The target='_blank' attribute opens the link in a new tab. It can also link to page sections using # ids.",
+      "explanation_hi": "Bhai <a> tag internet ka asli hero hai — iske bina web sirf documents ka dhakka-mukki hoti. href mein URL daalo aur link tayyar. target='_blank' daalo toh naye tab mein khulega — jaise autorickshaw se utarke doosra rickshaw lo, purana wala wait karta rahe. #id se usi page ke kisi section pe bhi jump kar sakte ho.",
+      "example_code": "<a href=\"https://google.com\" target=\"_blank\">Visit Google</a>\n<a href=\"#contact\">Go to Contact Section</a>"
+    },
+    {
+      "name": "<img> Image Tag",
+      "explanation_en": "The <img> element embeds images in a page. It is a self-closing (void) element. The src attribute specifies the image path and the alt attribute provides alternative text for accessibility and SEO.",
+      "explanation_hi": "Seedha baat — <img> se photo lagao page pe. src mein photo ka raasta batao, alt mein likho kya dikhna chahiye agar photo load na ho — accessibility ke liye zaroori hai yaar, screen readers inhe padhte hain. Aur haan, ye self-closing tag hai — koi closing </img> nahi hota, ekdum bachelor style.",
+      "example_code": "<img src=\"photo.jpg\" alt=\"A beautiful sunset\" width=\"600\" height=\"400\">"
+    },
+    {
+      "name": "Void / Self-Closing Elements",
+      "explanation_en": "Void elements like <img>, <br>, <hr>, <input>, <meta>, and <link> do not have closing tags because they cannot contain child content. They are complete in a single tag.",
+      "explanation_hi": "Kuch tags aise hote hain jinhe closing tag ki zaroorat hi nahi — jaise woh dost jo kaam karke chhup jaata hai, koi drama nahi. <img>, <br>, <hr>, <input> — ye sab void elements hain. HTML5 mein <br /> likhna optional hai, <br> bhi perfectly fine hai. Jugaad valid hai yahan.",
+      "example_code": "<br>\n<hr>\n<img src=\"img.png\" alt=\"image\">\n<input type=\"text\">\n<meta charset=\"UTF-8\">"
+    },
+    {
+      "name": "<div> Block Container",
+      "explanation_en": "The <div> element is a generic block-level container with no semantic meaning. It is used to group elements for styling with CSS or manipulation with JavaScript. It starts on a new line and takes full width.",
+      "explanation_hi": "Bhai <div> matlab developer ka sabse trusted dost — kuch samajh nahi aa raha toh ek <div> lapet do uske andar. Iska koi apna meaning nahi hota, ye sirf ek dabba hai jisme cheezein rakhte ho. CSS se style karo, JS se control karo. Itna use hota hai ki log joke karte hain — 'HTML = Divs all the way down.'",
+      "example_code": "<div class=\"card\">\n  <h2>Card Title</h2>\n  <p>Card content here.</p>\n</div>"
+    },
+    {
+      "name": "<span> Inline Container",
+      "explanation_en": "The <span> element is a generic inline container used to style or target a specific piece of text within a larger block. Unlike <div>, it does not break the flow of text.",
+      "explanation_hi": "<span> woh cheeky element hai jo text ke beech mein ghus jaata hai bina line todhe. Jaise WhatsApp pe bold karna ho sirf ek word, waise <span> se sirf uss hisse ko style karo. <div> block-level bhai hai, <span> inline chhota bhai — dono ka apna scene hai.",
+      "example_code": "<p>My favorite color is <span style=\"color: red;\">red</span>.</p>"
+    },
+    {
+      "name": "HTML Attributes",
+      "explanation_en": "Attributes provide additional information about HTML elements. They are written in the opening tag as name='value' pairs. Common attributes include id, class, style, src, href, alt, type, name, and placeholder.",
+      "explanation_hi": "Tags ke andar jo extra settings daali jaati hain — woh hote hain attributes. Jaise aadmi ke paas naam, umar, address hote hain, HTML element ke paas id, class, style hote hain. Ye sab opening tag mein likhte hain. Attributes ke bina elements boring default mode mein hote hain — ekdum plain dosa without chutney.",
+      "example_code": "<input type=\"email\" id=\"userEmail\" class=\"form-input\" placeholder=\"Enter email\" required>"
+    },
+    {
+      "name": "id Attribute",
+      "explanation_en": "The id attribute assigns a unique identifier to an element. Each id must be unique within the entire document. It is used to target specific elements with CSS (#id) or JavaScript (getElementById).",
+      "explanation_hi": "id matlab Aadhar Card of HTML — ek page pe ek hi element ka ek id hona chahiye, warna confusion ho jaayegi. CSS mein # se use karo, JS mein getElementById se pakdo. Bhai agar do elements ko same id de di toh browser confuse nahi hoga, par tu zaroor pakda jaayega interview mein.",
+      "example_code": "<h1 id=\"main-title\">Welcome</h1>\n\n<!-- CSS: #main-title { color: blue; } -->\n<!-- JS: document.getElementById('main-title') -->"
+    },
+    {
+      "name": "class Attribute",
+      "explanation_en": "The class attribute assigns one or more class names to an element. Multiple elements can share the same class. Classes are used to apply CSS styles or select groups of elements in JavaScript.",
+      "explanation_hi": "class matlab group membership — ek hi class kaafi saare elements pe laga sakte ho. Jaise school mein '10th-B' ek poora batch hota hai, waise ek CSS class se sab ko ek saath style karo. Multiple classes bhi de sakte ho ek element ko — space se separate karke. Ye id se zyada use hota hai daily life mein.",
+      "example_code": "<p class=\"highlight bold\">This text is highlighted and bold.</p>\n<p class=\"highlight\">This is also highlighted.</p>"
+    },
+    {
+      "name": "Semantic HTML Elements",
+      "explanation_en": "Semantic elements clearly describe their purpose and content — like <header>, <footer>, <nav>, <main>, <article>, <section>, <aside>. They improve accessibility, SEO, and code readability compared to generic divs.",
+      "explanation_hi": "Yaar semantic elements matlab meaningful tags — jaise ghar mein 'bedroom', 'kitchen', 'bathroom' likha ho instead of 'room1', 'room2'. <header> header ke liye, <footer> footer ke liye, <nav> navigation ke liye. Google aur screen readers in tags ko samajhte hain. Div soup mat banao yaar — 2024 mein semantic HTML likho, thoda samajhdaar lago.",
+      "example_code": "<header>\n  <nav>...</nav>\n</header>\n<main>\n  <article>\n    <section>...</section>\n  </article>\n  <aside>Sidebar</aside>\n</main>\n<footer>...</footer>"
+    },
+    {
+      "name": "<header> Element",
+      "explanation_en": "The <header> element represents introductory content — typically a logo, site title, and main navigation. A page can have multiple headers (e.g., one for the page, one inside an article).",
+      "explanation_hi": "Bhai <header> woh area hai jo page ke top pe hota hai — logo, site ka naam, navigation links. Jaise newspaper mein upar 'Times of India' likhaa hota hai, waise. Ek page pe multiple headers ho sakte hain — ek page ka, ek article ka. Confuse mat ho.",
+      "example_code": "<header>\n  <img src=\"logo.png\" alt=\"Site Logo\">\n  <h1>My Website</h1>\n  <nav>\n    <a href=\"/\">Home</a>\n    <a href=\"/about\">About</a>\n  </nav>\n</header>"
+    },
+    {
+      "name": "<nav> Element",
+      "explanation_en": "The <nav> element represents a section of navigation links — typically the main site menu or a table of contents. Not every group of links needs a <nav>, only major navigation blocks.",
+      "explanation_hi": "<nav> matlab navigation ka official designated area — site ke main menu ke liye use karo. Har jagah ke links ke liye mat dalo, sirf major navigation ke liye. Jaise metro map pe 'You Are Here' hota hai, <nav> users ko site pe orient karta hai. Screen readers bhi isko skip kar sakte hain directly.",
+      "example_code": "<nav>\n  <ul>\n    <li><a href=\"/home\">Home</a></li>\n    <li><a href=\"/blog\">Blog</a></li>\n    <li><a href=\"/contact\">Contact</a></li>\n  </ul>\n</nav>"
+    },
+    {
+      "name": "<main> Element",
+      "explanation_en": "The <main> element represents the dominant, unique content of the page body. There should be only one <main> per page, and it should not include repeated content like headers, footers, or sidebars.",
+      "explanation_hi": "<main> matlab page ka asli maal — jo content sirf isi page pe hai, jo repeat nahi hota. Ek page pe ek hi <main> hona chahiye. Jaise cricket match mein ek hi pitch hoti hai na — sab khelna usi pe hai. Header, footer, sidebar iske bahar rahe.",
+      "example_code": "<main>\n  <h1>Article Title</h1>\n  <p>Main article content goes here...</p>\n</main>"
+    },
+    {
+      "name": "<article> Element",
+      "explanation_en": "The <article> element represents a self-contained piece of content that could stand alone — like a blog post, news article, forum post, or product card. It makes sense when extracted from the page context.",
+      "explanation_hi": "<article> matlab self-contained content — khaali nikaal ke kahin aur bhi rakho toh sense banana chahiye. Blog post, news article, comment, review — inke liye <article> use karo. Jaise newspaper ka ek article kaato aur dosto ko bhejo — woh apne aap samajh aata hai. Poori newspaper ki zaroorat nahi.",
+      "example_code": "<article>\n  <h2>Blog Post Title</h2>\n  <p>Posted on <time datetime=\"2024-01-15\">Jan 15</time></p>\n  <p>Article content here...</p>\n</article>"
+    },
+    {
+      "name": "<section> Element",
+      "explanation_en": "The <section> element groups thematically related content. Unlike <article>, a section is part of something larger and doesn't stand alone. It typically contains a heading.",
+      "explanation_hi": "<section> matlab ek chapter — poori book ka hissa hai, akela nahi chalega. Ek page ke different hisse — 'About', 'Services', 'Contact' — inhe alag alag <section> mein daalo. Article aur section mein fark samajhna zaroori hai yaar, interview mein poochha jaata hai ye wala — 'article standalone hai, section context ka hissa hai.'",
+      "example_code": "<section id=\"about\">\n  <h2>About Us</h2>\n  <p>We are a company that...</p>\n</section>\n<section id=\"services\">\n  <h2>Our Services</h2>\n</section>"
+    },
+    {
+      "name": "<footer> Element",
+      "explanation_en": "The <footer> element represents the footer of a section or page — typically containing copyright, links, contact info, or related documents. Like <header>, a page can have multiple footers.",
+      "explanation_hi": "<footer> matlab page ka last scene — copyright, social media links, contact info. Jaise movie ke end mein 'The End' aur credits aate hain, waise. Har article ya section ka apna footer bhi ho sakta hai. Company ka copyright year wahan zaroor daalna — warna clients poochhenge 'itna purana site kyun lag raha hai?'",
+      "example_code": "<footer>\n  <p>&copy; 2024 My Company. All rights reserved.</p>\n  <a href=\"/privacy\">Privacy Policy</a>\n</footer>"
+    },
+    {
+      "name": "<ul> and <ol> Lists",
+      "explanation_en": "<ul> creates an unordered (bulleted) list. <ol> creates an ordered (numbered) list. Both use <li> elements as children. <ol> supports type (1, A, a, I, i) and start attributes.",
+      "explanation_hi": "Bhai <ul> matlab bullet wali list — jab order matter nahi karta, jaise grocery list. <ol> matlab numbered list — jab sequence important hai, jaise recipe ke steps. Dono ke andar <li> daalo. Ye itna common hai ki bina ye jaane HTML seekhna possible hi nahi. Nav menus bhi mostly <ul> se bante hain.",
+      "example_code": "<ul>\n  <li>Apples</li>\n  <li>Bananas</li>\n</ul>\n<ol type=\"1\" start=\"1\">\n  <li>Boil water</li>\n  <li>Add tea leaves</li>\n</ol>"
+    },
+    {
+      "name": "<li> List Item",
+      "explanation_en": "The <li> element defines an item in a list. It must be a direct child of <ul>, <ol>, or <menu>. It can contain any HTML content, including nested lists.",
+      "explanation_hi": "Har list item <li> mein aata hai — seedha simple. Par yaad raho, <li> sirf <ul> ya <ol> ke andar hi aata hai, bahar nahi. Nested lists bhi bana sakte ho — <li> ke andar ek aur <ul>. Jaise ghar ke andar room ke andar almirah ke andar drawer — sab nested.",
+      "example_code": "<ul>\n  <li>Frontend\n    <ul>\n      <li>HTML</li>\n      <li>CSS</li>\n    </ul>\n  </li>\n  <li>Backend</li>\n</ul>"
+    },
+    {
+      "name": "<table> Element",
+      "explanation_en": "The <table> element creates a data table using <thead>, <tbody>, <tfoot>, <tr> (row), <th> (header cell), and <td> (data cell). Tables are for tabular data only — not for layout.",
+      "explanation_hi": "Bhai <table> ka use sirf actual data ke liye karo — students ki marks list, train timings, pricing comparison. Layout ke liye table use karna 2005 ka trend tha — aaj ke zamaane mein CSS Flexbox aur Grid hai. <th> header cell hai (bold by default), <td> normal data cell. Scope attribute daalo accessibility ke liye — seniors khush honge.",
+      "example_code": "<table>\n  <thead>\n    <tr><th>Name</th><th>Score</th></tr>\n  </thead>\n  <tbody>\n    <tr><td>Rahul</td><td>95</td></tr>\n    <tr><td>Priya</td><td>88</td></tr>\n  </tbody>\n</table>"
+    },
+    {
+      "name": "<form> Element",
+      "explanation_en": "The <form> element creates an HTML form for user input. Key attributes: action (where to send data), method (GET or POST), and enctype (needed for file uploads: multipart/form-data).",
+      "explanation_hi": "<form> matlab user se data collect karne ka system — login form, registration, search box. action se batao data kahan bhejana hai, method se batao GET ya POST. POST mein data URL mein nahi dikhta — passwords ke liye always POST use karna yaar, GET se password URL mein dikh jaata hai, ekdum public embarrassment.",
+      "example_code": "<form action=\"/submit\" method=\"POST\">\n  <label for=\"name\">Name:</label>\n  <input type=\"text\" id=\"name\" name=\"name\" required>\n  <button type=\"submit\">Submit</button>\n</form>"
+    },
+    {
+      "name": "<input> Element",
+      "explanation_en": "The <input> element is the most versatile form element. The type attribute controls its behavior — text, email, password, number, checkbox, radio, file, date, range, color, submit, button, hidden.",
+      "explanation_hi": "Yaar <input> sabse kaam aane wala form element hai — ek tag, kaafi saare roop. type='text' se simple text, type='password' se dots wala field, type='checkbox' tick karne ke liye, type='file' file upload ke liye. Ek cheez yaad rakh — input ke andar name attribute daalna must hai, warna form submit pe wo data server ko nahi milega. Baap ki galti nahi, naam nahi rakha toh.",
+      "example_code": "<input type=\"text\" placeholder=\"Your name\">\n<input type=\"email\" placeholder=\"Email\" required>\n<input type=\"password\" minlength=\"8\">\n<input type=\"checkbox\" id=\"agree\"> <label for=\"agree\">I agree</label>\n<input type=\"file\" accept=\".pdf,.docx\">"
+    },
+    {
+      "name": "<label> Element",
+      "explanation_en": "The <label> element associates a text label with a form control. Using the for attribute (matching the input's id) improves accessibility — clicking the label also focuses the input.",
+      "explanation_hi": "Bhai label daalo form ke inputs ke saath — ye accessibility ke liye bahut zaroori hai. for attribute mein input ka id daalo, phir label click karne se input focus ho jaata hai. Screen readers ke liye bhi helpful hai. Bina label ke form banana waise hi hai jaise nameplate ke bina office — koi jaanta hi nahi kahan jaana hai.",
+      "example_code": "<label for=\"username\">Username:</label>\n<input type=\"text\" id=\"username\" name=\"username\">\n\n<!-- OR wrap style -->\n<label>\n  Password:\n  <input type=\"password\" name=\"password\">\n</label>"
+    },
+    {
+      "name": "<button> Element",
+      "explanation_en": "The <button> element creates a clickable button. The type attribute can be submit (default inside forms), button (no default action), or reset. Unlike <input type='button'>, it can contain HTML content.",
+      "explanation_hi": "Bhai <button> aur <input type='button'> mein fark yaad rakh — <button> ke andar HTML content daal sakte ho, icon bhi, image bhi. Form ke andar <button> ka default type submit hota hai — matlab agar type='button' nahi likha toh click karte hi form submit ho jaayega, chahe chahte ho ya nahi. Surprise pakoda moment.",
+      "example_code": "<button type=\"submit\">Send Form</button>\n<button type=\"button\" onclick=\"alert('Hi')\">Click Me</button>\n<button type=\"reset\">Clear Form</button>"
+    },
+    {
+      "name": "<select> and <option>",
+      "explanation_en": "<select> creates a dropdown menu. <option> elements define the choices. The selected attribute pre-selects an option. Adding multiple attribute allows multi-select. Use <optgroup> to group options.",
+      "explanation_hi": "Dropdown banana ho toh <select> use karo — jaise zomato pe cuisine filter hota hai. <option> mein har choice likhte hain, value attribute mein actual data aur text mein jo dikhna hai. selected daalo toh default value set hoti hai. <optgroup> se options ko categories mein baant sakte ho, ekdum organized dost ki tarah.",
+      "example_code": "<select name=\"city\">\n  <optgroup label=\"North India\">\n    <option value=\"del\">Delhi</option>\n    <option value=\"lko\" selected>Lucknow</option>\n  </optgroup>\n  <option value=\"mum\">Mumbai</option>\n</select>"
+    },
+    {
+      "name": "<textarea> Element",
+      "explanation_en": "The <textarea> element creates a multi-line text input. Use rows and cols attributes (or CSS) to set its size. Unlike <input>, it has an opening and closing tag, and default text goes between them.",
+      "explanation_hi": "Jab ek line se kaam nahi chalta — jaise 'apni shikayat likhein' wale forms — toh <textarea> use karo. rows aur cols se size set karo, ya CSS se. Input element ki tarah self-closing nahi hai ye — </textarea> lagana padega. Default text opening aur closing tag ke beech mein likhte hain, placeholder attribute bhi kaam karta hai.",
+      "example_code": "<textarea name=\"message\" rows=\"5\" cols=\"40\" placeholder=\"Write your message...\">\n</textarea>"
+    },
+    {
+      "name": "HTML Comments",
+      "explanation_en": "HTML comments are written as <!-- comment text --> and are not displayed in the browser. They are used to add notes for developers, temporarily disable code, or document sections of markup.",
+      "explanation_hi": "Comment matlab notes for future self — ya future developer jo tera code maintain karega. <!-- is tarah likhte hain --> aur browser isko ignore karta hai. Par yaad rakh yaar, HTML comments browser mein source code dekh ke anyone padh sakta hai — passwords ya secrets kabhi comment mein mat daalna. Ekdum ajeeb mistake hoti hai ye, par log karte hain.",
+      "example_code": "<!-- This is a navigation section -->\n<nav>\n  <a href=\"/\">Home</a>\n  <!-- <a href=\"/old\">Old Page</a> (disabled) -->\n</nav>"
+    },
+    {
+      "name": "HTML Entities",
+      "explanation_en": "HTML entities are special codes used to display reserved characters or special symbols. Format: &name; or &#number;. Common ones: &lt; (<), &gt; (>), &amp; (&), &copy; (©), &nbsp; (non-breaking space).",
+      "explanation_hi": "Kuch characters HTML ko confuse kar dete hain — jaise < aur > tags ke liye reserve hain. Inhe directly likhoge toh browser ulta seedha ho jaata hai. Solution? Entities use karo — &lt; likhoge toh < dikhega. &nbsp; non-breaking space hai — ye woh space hai jo dono words ko ek saath rakhe, kabhi alag na kare, jaise pakka dosti.",
+      "example_code": "<p>5 &lt; 10 and 10 &gt; 5</p>\n<p>Copyright &copy; 2024 &amp; Beyond</p>\n<p>Price:&nbsp;&#8377;499</p>"
+    },
+    {
+      "name": "<meta> Tags",
+      "explanation_en": "Meta tags go inside <head> and provide metadata: charset sets character encoding, viewport controls mobile scaling, description is used by search engines, and og: tags enable social media preview cards.",
+      "explanation_hi": "Meta tags matlab website ka invisible identity card — browser aur Google ke liye information. charset='UTF-8' daalo warna Hindi fonts toot jaayengi. viewport meta daalo warna mobile pe site bakwaas dikhegi. description meta Google ke snippet mein dikhta hai. og: tags — Facebook, WhatsApp pe link share karo toh preview mein image aur title dikhne ke liye.",
+      "example_code": "<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n<meta name=\"description\" content=\"Best cooking recipes online\">\n<meta property=\"og:title\" content=\"My Site\">\n<meta property=\"og:image\" content=\"preview.jpg\">"
+    },
+    {
+      "name": "<link> Tag",
+      "explanation_en": "The <link> element goes in <head> and defines relationships between the document and external resources. Most commonly used to link CSS stylesheets (rel='stylesheet') and favicons (rel='icon').",
+      "explanation_hi": "<link> tag se CSS file attach karo apne HTML se. Bhai ye sabse common use hai — <link rel='stylesheet' href='style.css'>. Favicon bhi isi se lagata hai — wo chhota icon jo browser tab mein dikhta hai, jaise YouTube pe YouTube ka logo. Seedha, no drama.",
+      "example_code": "<link rel=\"stylesheet\" href=\"styles.css\">\n<link rel=\"icon\" href=\"favicon.ico\" type=\"image/x-icon\">\n<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">"
+    },
+    {
+      "name": "<script> Tag",
+      "explanation_en": "The <script> element embeds or links JavaScript. Place it at the bottom of <body> or use the defer/async attributes in <head>. defer loads JS after HTML parsing; async loads and executes immediately.",
+      "explanation_hi": "<script> se JavaScript connect karo HTML mein. Bottom of body pe lagana tha purane zamaane mein — isse HTML pehle load hota tha. Ab <head> mein lagao par defer attribute daalo — defer matlab 'bhai HTML pehle parse ho jaane de, phir JS chalana'. async matlab 'tera kaam chal, JS apne aap load hoti rahegi'. Interview favourites hain ye dono.",
+      "example_code": "<head>\n  <script src=\"app.js\" defer></script>\n</head>\n<body>\n  ...\n  <!-- OR inline JS -->\n  <script>\n    console.log('Hello!');\n  </script>\n</body>"
+    },
+    {
+      "name": "data-* Custom Attributes",
+      "explanation_en": "Custom data attributes (data-*) allow you to store extra information on HTML elements without affecting rendering or semantics. They can be accessed in JavaScript via element.dataset.attributeName.",
+      "explanation_hi": "Bhai data-* attributes developer ka secret weapon hai — koi bhi custom data store karo element pe bina kisi side effect ke. data-user-id='42' likho, JavaScript mein element.dataset.userId se padho. CamelCase ho jaata hai automatically — data-user-id JS mein userId ban jaata hai. Jugaad elegant hai ye wala.",
+      "example_code": "<button data-user-id=\"42\" data-role=\"admin\" onclick=\"handleClick(this)\">\n  Edit User\n</button>\n\n<!-- JS: btn.dataset.userId => '42' -->\n<!-- JS: btn.dataset.role => 'admin' -->"
+    },
+    {
+      "name": "<iframe> Element",
+      "explanation_en": "The <iframe> element embeds another HTML document or webpage within the current page. Used for embedding maps, videos, social widgets, and third-party content. Security: use sandbox attribute to restrict capabilities.",
+      "explanation_hi": "<iframe> matlab page ke andar ek aur page — jaise TV ke andar chhota TV. YouTube embed, Google Maps, payment gateways — sab <iframe> use karte hain. sandbox attribute daalo security ke liye — warna malicious iframe bahut nuksaan kar sakta hai. Ye wala advanced hai par daily life mein bahut kaam aata hai.",
+      "example_code": "<iframe \n  src=\"https://www.google.com/maps/embed?...\" \n  width=\"600\" \n  height=\"450\" \n  style=\"border:0\" \n  allowfullscreen\n  loading=\"lazy\">\n</iframe>"
+    },
+    {
+      "name": "<video> Element",
+      "explanation_en": "The <video> element embeds video directly in HTML5. Key attributes: controls, autoplay, muted, loop, poster (thumbnail image), and preload. Use multiple <source> children for format fallbacks.",
+      "explanation_hi": "Ab video embed karna makkhan ho gaya bhai — <video> tag directly HTML mein. controls attribute daalo warna play/pause kuch nahi dikhega. autoplay ke saath muted zaroori hai — warna browsers block kar dete hain autoplay ko. poster se thumbnail set karo. Multiple <source> daalo — MP4, WebM — jo format browser support kare, woh chalayega.",
+      "example_code": "<video width=\"640\" controls poster=\"thumbnail.jpg\">\n  <source src=\"movie.mp4\" type=\"video/mp4\">\n  <source src=\"movie.webm\" type=\"video/webm\">\n  Your browser doesn't support video.\n</video>"
+    },
+    {
+      "name": "<audio> Element",
+      "explanation_en": "The <audio> element embeds audio content. It supports controls, autoplay, muted, loop, and preload attributes. Multiple <source> elements provide format fallbacks across browsers.",
+      "explanation_hi": "Video jaisa hi, audio ke liye <audio> tag. Podcast, background music, sound effects — sab ke liye. controls attribute daao warna kuch dikhega nahi. MP3 sabse widely supported format hai. Autoplay mat karo bina user permission ke — log gussa ho jaate hain jab achanak se koi site baj uthti hai, jaise unattended phone call.",
+      "example_code": "<audio controls>\n  <source src=\"podcast.mp3\" type=\"audio/mpeg\">\n  <source src=\"podcast.ogg\" type=\"audio/ogg\">\n  Your browser doesn't support audio.\n</audio>"
+    },
+    {
+      "name": "<canvas> Element",
+      "explanation_en": "The <canvas> element provides a drawing surface that can be used with JavaScript to render graphics, animations, games, and data visualizations. It is pixel-based and controlled entirely through JS.",
+      "explanation_hi": "<canvas> ek blank drawing board hai — HTML sirf jagah deta hai, actual drawing JavaScript se hoti hai. Games, graphs, image editors — sab canvas pe bante hain. Width aur height attributes mein set karo size (CSS se mat karna canvas ka size, pixels blur ho jaate hain). Isko seekhna thoda mehnat maangta hai par result dhamaakedaar hota hai.",
+      "example_code": "<canvas id=\"myCanvas\" width=\"400\" height=\"200\"></canvas>\n<script>\n  const ctx = document.getElementById('myCanvas').getContext('2d');\n  ctx.fillStyle = 'blue';\n  ctx.fillRect(10, 10, 150, 80);\n</script>"
+    },
+    {
+      "name": "Accessibility (ARIA) Attributes",
+      "explanation_en": "ARIA (Accessible Rich Internet Applications) attributes like role, aria-label, aria-hidden, aria-expanded, and aria-describedby improve accessibility for screen reader users. Use semantic HTML first, ARIA as enhancement.",
+      "explanation_hi": "Bhai accessibility yaani apni website ko sab ke liye usable banana — aankhon se kam dikhne waalon ke liye bhi. Screen readers HTML padhte hain. aria-label se explain karo button kya karta hai, aria-hidden='true' se cheezein screen reader se chhupao. Rule yaad rakh: pehle semantic HTML, phir ARIA. ARIA ko bandage ki tarah use karo, crutch ki tarah nahi.",
+      "example_code": "<button aria-label=\"Close dialog\">X</button>\n<nav aria-label=\"Main navigation\">...</nav>\n<div role=\"alert\" aria-live=\"polite\">Form submitted!</div>\n<img src=\"deco.svg\" alt=\"\" aria-hidden=\"true\">"
+    },
+    {
+      "name": "HTML Boilerplate",
+      "explanation_en": "The standard HTML5 starting template includes DOCTYPE, html with lang, head with charset/viewport/title, and an empty body. This is the minimum valid structure for any webpage.",
+      "explanation_hi": "Boilerplate matlab wo base structure jo har HTML file mein hona chahiye. Jaise ghar banane se pehle neenv daalna padta hai, waise har page mein ye basic dhaancha chahiye. VS Code mein sirf '!' type karo aur Tab dabao — poora boilerplate aa jaata hai. Ye Emmet shortcut life-changing hai, yaar.",
+      "example_code": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Page Title</title>\n</head>\n<body>\n  <h1>Hello World</h1>\n</body>\n</html>"
+    },
+    {
+      "name": "<strong> and <em>",
+      "explanation_en": "<strong> indicates strong importance (renders bold by default) and <em> indicates emphasis (renders italic). Both are semantic — use them for meaning, not just visual styling. Use CSS for purely decorative bold/italic.",
+      "explanation_hi": "Bhai log galat use karte hain ye dono. <b> aur <i> sirf visual hain — bold aur italic dikhte hain. <strong> aur <em> semantic hain — screen readers inhe samjhte hain. <strong> matlab 'ye important hai', <em> matlab 'isko emphasize karo'. Dono ka difference: ek sirf dikhta hai, ek matlab rakhta hai. Interview mein poochhte hain ye.",
+      "example_code": "<p>This is <strong>very important</strong> information.</p>\n<p>You <em>must</em> read the terms.</p>\n<!-- Don't use just for styling: use CSS instead -->"
+    },
+    {
+      "name": "<br> and <hr>",
+      "explanation_en": "<br> inserts a line break within text (use sparingly, prefer CSS margins). <hr> creates a thematic break — a horizontal rule separating content sections. Both are void elements.",
+      "explanation_hi": "<br> matlab line break — text ke beech mein neeche jana, jaise Enter dabana. Par bhai iska overuse mat karo, CSS margin/padding zyada achha hai spacing ke liye. <hr> matlab horizontal line — sections ko visually alag karne ke liye, jaise newspaper mein articles ke beech line hoti hai. Dono void elements hain — koi closing tag nahi.",
+      "example_code": "<address>\n  123 MG Road,<br>\n  Bengaluru - 560001\n</address>\n<hr>\n<p>Next section starts here.</p>"
+    },
+    {
+      "name": "<blockquote> and <q>",
+      "explanation_en": "<blockquote> is for long, block-level quotations from external sources — use the cite attribute for the URL source. <q> is for short inline quotations, which browsers render with quotation marks automatically.",
+      "explanation_hi": "Quote karna ho toh <blockquote> (badi quotes ke liye) aur <q> (chhoti inline quotes ke liye) use karo — seedha <p> ke andar mat thaango. cite attribute mein source URL daalo — proper journalism style. <q> mein browser khud hi quotation marks add kar deta hai — tujhe manually \" nahi daalne. Clean and semantic.",
+      "example_code": "<blockquote cite=\"https://source.com\">\n  <p>The only way to do great work is to love what you do.</p>\n  <footer>— Steve Jobs</footer>\n</blockquote>\n\n<p>He said <q>hello, world</q> and left.</p>"
+    },
+    {
+      "name": "<code>, <pre>, <kbd>",
+      "explanation_en": "<code> marks inline code snippets (monospace font). <pre> preserves whitespace and line breaks for preformatted text. <kbd> indicates keyboard input. Wrap <code> inside <pre> for multi-line code blocks.",
+      "explanation_hi": "Developer documentation likhni ho toh ye tags must hain. <code> se inline code likho — jaise 'use the console.log() function'. <pre> se preformatted text — indentation aur newlines preserve hoti hain. <kbd> se keyboard shortcuts show karo. Sab ke sab monospace font mein render hote hain. Documentation blogs mein bahut use hote hain.",
+      "example_code": "<p>Use the <code>document.querySelector()</code> method.</p>\n\n<pre><code>\nfunction greet(name) {\n  return 'Hello, ' + name;\n}\n</code></pre>\n\n<p>Press <kbd>Ctrl</kbd> + <kbd>S</kbd> to save.</p>"
+    },
+    {
+      "name": "<time> Element",
+      "explanation_en": "The <time> element represents a specific period in time. The datetime attribute provides a machine-readable format (ISO 8601) while the displayed text can be human-friendly. Useful for SEO and accessibility.",
+      "explanation_hi": "Blog posts aur events ke liye <time> tag use karo — machine-readable format datetime attribute mein, human-friendly text dikhane ke liye. Search engines events ko better samajhte hain isse. datetime='2024-01-15' likhoge toh Google jaanta hai exact date, chahe display text kuch bhi ho. Small effort, big SEO reward.",
+      "example_code": "<p>Posted on <time datetime=\"2024-01-15T09:30:00\">January 15, 2024</time></p>\n<p>Event starts <time datetime=\"20:00\">8 PM</time> tonight.</p>"
+    },
+    {
+      "name": "<details> and <summary>",
+      "explanation_en": "<details> creates a disclosure widget — content is hidden by default and revealed when clicked. <summary> provides the visible heading/toggle. No JavaScript needed! The open attribute makes it expanded by default.",
+      "explanation_hi": "Bhai ye ek hidden gem hai HTML ka — pure HTML mein accordion/toggle banana bina JavaScript ke! <details> ke andar <summary> daalo — summary text pe click karo, baaki content expand ho jaata hai. FAQ sections ke liye ekdum perfect hai. open attribute daalo toh default mein khula rahega. CSS se customize bhi kar sakte ho.",
+      "example_code": "<details>\n  <summary>What is HTML?</summary>\n  <p>HTML stands for HyperText Markup Language. It structures web content.</p>\n</details>\n\n<details open>\n  <summary>Already expanded</summary>\n  <p>This is visible by default.</p>\n</details>"
+    },
+    {
+      "name": "<figure> and <figcaption>",
+      "explanation_en": "<figure> wraps self-contained content like images, diagrams, code, or charts that is referenced from the main content. <figcaption> provides an optional caption. It improves semantic structure over a plain <img> with a <p>.",
+      "explanation_hi": "Jab image ya diagram ko caption ke saath dikhana ho — scientific papers aur blog posts style — toh <figure> aur <figcaption> use karo. Ye semantic hai — screen readers aur search engines samajhte hain ki image aur caption related hain. Plain <img> + <p> se zyada professional lagta hai. Wikipedia pe dekho — wahan exactly aise hi use hota hai.",
+      "example_code": "<figure>\n  <img src=\"chart.png\" alt=\"Sales growth chart 2024\">\n  <figcaption>Fig 1: Q1 to Q4 sales growth comparison</figcaption>\n</figure>"
+    },
+    {
+      "name": "tabindex Attribute",
+      "explanation_en": "The tabindex attribute controls keyboard navigation order. tabindex='0' adds an element to the natural tab order. tabindex='-1' removes it from tab order but lets JavaScript focus it. Positive values (avoid) set explicit order.",
+      "explanation_hi": "Keyboard se Tab dabane pe focus kaha jaata hai — tabindex isko control karta hai. tabindex='0' daalo toh element natural order mein aa jaata hai Tab ke liye. tabindex='-1' matlab Tab se nahi aayega par JS se focus kar sakte ho — modals ke liye useful hai. Positive values avoid karo — akeli tab order maintain karna nightmare hai.",
+      "example_code": "<div tabindex=\"0\" role=\"button\" onkeypress=\"handleKey(event)\">\n  Keyboard accessible div\n</div>\n<div tabindex=\"-1\" id=\"modal\">\n  Focus me with JS only\n</div>"
+    },
+    {
+      "name": "Responsive Images (<picture>, srcset, sizes)",
+      "explanation_en": "The srcset attribute on <img> provides multiple image sources for different screen densities/widths. The <picture> element with <source> children allows art direction — serving completely different crops for different breakpoints.",
+      "explanation_hi": "Bhai responsive images matlab sahi image sahi screen pe. Desktop pe bada image, mobile pe chhota — bandwidth waste mat karo. srcset aur sizes attributes se browser khud decide karta hai kaunsi image load karni hai. <picture> se toh different crops bhi de sakte ho — portrait on mobile, landscape on desktop. Performance ke liye gold standard hai ye.",
+      "example_code": "<img \n  src=\"img-800.jpg\"\n  srcset=\"img-400.jpg 400w, img-800.jpg 800w, img-1200.jpg 1200w\"\n  sizes=\"(max-width: 600px) 400px, 800px\"\n  alt=\"Responsive image\">\n\n<picture>\n  <source media=\"(max-width: 600px)\" srcset=\"mobile.jpg\">\n  <source media=\"(min-width: 601px)\" srcset=\"desktop.jpg\">\n  <img src=\"desktop.jpg\" alt=\"Adaptive image\">\n</picture>"
+    },
+    {
+      "name": "lazy loading (loading attribute)",
+      "explanation_en": "The loading='lazy' attribute on <img> and <iframe> defers loading of off-screen resources until the user scrolls near them. This is a native browser feature requiring zero JavaScript. Use loading='eager' for above-the-fold images.",
+      "explanation_hi": "loading='lazy' — ye ek attribute itna kaam karta hai ki seriously JS plugin ki zaroorat hi nahi padti. Images tab tak load nahi hongi jab tak user scroll karke unke paas na aaye. Page load super fast ho jaata hai. Upar wali images ke liye loading='eager' ya bilkul mat likho — wo pehle load honee chahiye. Ek line, bada fayda.",
+      "example_code": "<img src=\"hero.jpg\" alt=\"Hero\" loading=\"eager\">\n<img src=\"below-fold.jpg\" alt=\"Content\" loading=\"lazy\">\n<iframe src=\"map.html\" loading=\"lazy\"></iframe>"
     }
   ]
 }
