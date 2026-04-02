@@ -1,5 +1,4 @@
 import * as THREE from "https://esm.sh/three";
-import { Pane } from "https://cdn.skypack.dev/tweakpane@4.0.4";
 import { EffectComposer } from "https://esm.sh/three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "https://esm.sh/three/examples/jsm/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "https://esm.sh/three/examples/jsm/postprocessing/UnrealBloomPass.js";
@@ -88,11 +87,11 @@ renderer.setClearColor(0x000000, 0);
 document.body.appendChild(renderer.domElement);
 
 // Canvas styling - initially hidden
-renderer.domElement.style.position = "absolute";
+renderer.domElement.style.position = "fixed";
 renderer.domElement.style.top = "0";
 renderer.domElement.style.left = "0";
-renderer.domElement.style.zIndex = "2";
-renderer.domElement.style.pointerEvents = "auto";
+renderer.domElement.style.zIndex = "0";
+renderer.domElement.style.pointerEvents = "none";
 renderer.domElement.style.background = "transparent";
 
 // Store original bloom values

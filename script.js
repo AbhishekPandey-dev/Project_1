@@ -26,6 +26,31 @@ function showTime() {
 }
 showTime();
 
+const preloader = document.getElementById("preloader");
+const mainContent = document.getElementById("main-content");
+
+function hidePreloader() {
+  if (!preloader || preloader.dataset.dismissed === "true") return;
+
+  preloader.dataset.dismissed = "true";
+  preloader.classList.add("fade-out");
+
+  if (mainContent) {
+    mainContent.classList.add("fade-in");
+  }
+
+  setTimeout(() => {
+    preloader.style.display = "none";
+  }, 1000);
+}
+
+// Fallback so the page still opens even if the background module stalls.
+window.addEventListener("load", () => {
+  setTimeout(hidePreloader, 600);
+});
+
+setTimeout(hidePreloader, 4000);
+
 document.addEventListener("mousemove", (e) => {
   const x = e.clientX;
   const y = e.clientY;
