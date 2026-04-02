@@ -1,467 +1,674 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>DevDocs Viewer</title>
-  
-  <!-- Prism.js CSS (Syntax Highlighting) - Theme: Okaidia (VS Code Dark-like) -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
-  
-  <style>
-    /* ========================================= */
-    /* 1. CSS VARIABLES & BASE STYLES           */
-    /* ========================================= */
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap');
-    
-    :root {
-      --bg-color: rgba(18, 18, 20, 0.6);
-      --sidebar-bg: rgba(255, 255, 255, 0.03);
-      --card-bg: rgba(255, 255, 255, 0.05);
-      --text-main: #f0f0f0;
-      --text-muted: #9aa0a6;
-      --accent: #8c7ae6;
-      --accent-hover: #9c88ff;
-      --border: rgba(255, 255, 255, 0.08);
-      --glass-blur: blur(25px);
-    }
-    
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      scroll-behavior: smooth; /* Smooth scrolling for anchor links */
-    }
-    
-    body {
-      background: transparent;
-      color: var(--text-main);
-      font-family: 'Inter', sans-serif;
-      overflow: hidden; /* Hide main body scroll, use inner scrolling */
-      height: 100vh;
-      display: flex;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <title>DevDocs Viewer</title>
 
-    /* Ambient background blob */
-    .ambient-bg {
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle at 50% 50%, rgba(140, 122, 230, 0.08), transparent 50%),
-                  radial-gradient(circle at 80% 20%, rgba(0, 184, 148, 0.05), transparent 40%);
-      z-index: -1;
-      pointer-events: none;
-    }
+    <!-- Prism.js CSS (Syntax Highlighting) - Theme: Okaidia (VS Code Dark-like) -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css"
+      rel="stylesheet"
+    />
 
-    /* ========================================= */
-    /* 2. LAYOUT: SIDEBAR & MAIN CONTENT        */
-    /* ========================================= */
-    
-    .sidebar {
-      width: 280px;
-      height: 100vh;
-      flex-shrink: 0;
-      background: rgba(0, 0, 0, 0.2);
-      border-right: 1px solid var(--border);
-      backdrop-filter: var(--glass-blur);
-      -webkit-backdrop-filter: var(--glass-blur);
-      display: flex;
-      flex-direction: column;
-      padding: 20px;
-      z-index: 10;
-    }
+    <style>
+      /* ========================================= */
+      /* 1. CSS VARIABLES & BASE STYLES           */
+      /* ========================================= */
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap");
 
-    .search-box {
-      background: rgba(0,0,0,0.3);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 10px 14px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    .search-box input {
-      background: transparent;
-      border: none;
-      color: white;
-      font-size: 14px;
-      width: 100%;
-      outline: none;
-      font-family: 'Inter', sans-serif;
-    }
-    .search-box input::placeholder {
-      color: rgba(255,255,255,0.4);
-    }
-
-    .nav-list {
-      flex: 1;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      padding-right: 5px; /* for scrollbar */
-    }
-
-    .nav-item {
-      padding: 10px 12px;
-      border-radius: 8px;
-      color: var(--text-muted);
-      cursor: pointer;
-      font-size: 14px;
-      transition: all 0.2s ease;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      text-decoration: none;
-    }
-
-    .nav-item:hover {
-      background: rgba(255,255,255,0.06);
-      color: white;
-    }
-
-    /* Right Main Content */
-    .main-content {
-      flex: 1;
-      height: 100vh;
-      overflow-y: auto;
-      padding: 40px;
-      perspective: 1000px;
-    }
-
-    /* ========================================= */
-    /* 3. COMPONENTS: HERO & CARDS              */
-    /* ========================================= */
-    
-    /* Hero Section */
-    .hero {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 40px;
-      backdrop-filter: var(--glass-blur);
-      margin-bottom: 40px;
-      display: flex;
-      gap: 30px;
-      align-items: center;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-      transform-origin: top center;
-    }
-
-    .hero-icon {
-      width: 100px;
-      height: 100px;
-      object-fit: contain;
-      filter: drop-shadow(0 10px 15px rgba(0,0,0,0.3));
-    }
-
-    .hero-info { flex: 1; }
-    
-    .hero-title {
-      font-size: 48px;
-      font-weight: 700;
-      margin-bottom: 5px;
-      background: linear-gradient(135deg, #ffffff, #a0a0a5);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .hero-subtitle {
-      color: var(--accent);
-      font-weight: 600;
-      font-size: 16px;
-      margin-bottom: 20px;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-    }
-
-    /* Two-col Definition Grid */
-    .def-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-      margin-top: 20px;
-    }
-    
-    .def-box {
-      background: rgba(0,0,0,0.2);
-      padding: 20px;
-      border-radius: 12px;
-      border-left: 3px solid var(--accent);
-    }
-    .def-box.hinglish {
-      border-left-color: #00b894;
-      background: linear-gradient(90deg, rgba(0, 184, 148, 0.05), transparent);
-    }
-    
-    .def-box h4 {
-      font-size: 12px;
-      color: rgba(255,255,255,0.5);
-      text-transform: uppercase;
-      margin-bottom: 10px;
-      font-weight: 600;
-    }
-
-    /* Attributes Cards */
-    .attr-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 30px;
-      margin-bottom: 24px;
-      backdrop-filter: var(--glass-blur);
-    }
-
-    .attr-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 20px;
-    }
-
-    .attr-title {
-      font-family: 'Fira Code', monospace;
-      font-size: 22px;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    
-    .attr-desc-en {
-      font-size: 16px;
-      line-height: 1.6;
-      color: #e0e0e0;
-      margin-bottom: 15px;
-    }
-
-    .attr-desc-hi {
-      font-size: 15px;
-      line-height: 1.6;
-      color: #d1eadb;
-      background: rgba(0, 184, 148, 0.08);
-      border-left: 3px solid #00b894;
-      padding: 15px 20px;
-      border-radius: 0 8px 8px 0;
-      margin-bottom: 20px;
-    }
-
-    /* Code Block Area */
-    .code-wrapper {
-      position: relative;
-      background: #1e1e1e;
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,0.1);
-      overflow: hidden;
-      box-shadow: inset 0 2px 10px rgba(0,0,0,0.3);
-    }
-
-    .code-header {
-      background: #2d2d2d;
-      padding: 10px 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-    }
-    
-    .code-dots {
-      display: flex;
-      gap: 8px;
-    }
-    .code-dots span {
-      width: 12px; height: 12px; border-radius: 50%;
-      background: #ff5f56;
-    }
-    .code-dots span:nth-child(2) { background: #ffbd2e; }
-    .code-dots span:nth-child(3) { background: #27c93f; }
-
-    .copy-btn {
-      background: rgba(255,255,255,0.1);
-      border: none;
-      color: white;
-      padding: 6px 12px;
-      border-radius: 4px;
-      font-size: 12px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .copy-btn:hover { background: rgba(255,255,255,0.2); }
-
-    .code-wrapper pre {
-      margin: 0 !important;
-      padding: 20px !important;
-      background: transparent !important;
-      border: none !important;
-      font-family: 'Fira Code', monospace !important;
-      font-size: 14.5px !important;
-    }
-
-    /* Scrollbars */
-    ::-webkit-scrollbar { width: 8px; height: 8px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
-    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.4); }
-
-    /* Loader */
-    #loader {
-      position: fixed; inset: 0; background: var(--bg-color); z-index: 50;
-      display: flex; flex-direction: column; justify-content: center; align-items: center;
-    }
-    .spinner {
-      width: 50px; height: 50px; border: 3px solid rgba(255,255,255,0.1);
-      border-top-color: var(--accent); border-radius: 50%;
-      animation: spin 1s infinite cubic-bezier(0.5, 0.1, 0.4, 0.9);
-    }
-    @keyframes spin { 100% { transform: rotate(360deg); } }
-
-  </style>
-</head>
-<body>
-
-  <!-- Background Ambient Glow -->
-  <div class="ambient-bg"></div>
-
-  <!-- Full Screen Loader -->
-  <div id="loader">
-    <div class="spinner"></div>
-    <div style="margin-top: 20px; color: var(--text-muted); font-weight: 500; font-size: 15px;">Initializing Engine...</div>
-  </div>
-
-  <!-- Left Navigation Sidebar -->
-  <aside class="sidebar" id="sidebar" style="display: none;">
-    <div class="search-box">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-      <input type="text" id="searchInput" placeholder="Search attributes...">
-    </div>
-    <nav class="nav-list" id="navList">
-      <!-- Links generated by JS -->
-    </nav>
-  </aside>
-
-  <!-- Main Content Area -->
-  <main class="main-content" id="mainContent" style="display: none;">
-    <!-- Hero and Cards generated by JS -->
-  </main>
-
-  <!-- ========================================= -->
-  <!-- 4. EXTERNAL LIBRARIES (CDN)             -->
-  <!-- ========================================= -->
-  <!-- GSAP for Smooth Animations -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-  <!-- Prism.js for code highlighting -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
-
-  <!-- ========================================= -->
-  <!-- 5. JAVASCRIPT LOGIC                     -->
-  <!-- ========================================= -->
-  <script>
-    /**
-     * BEGINNER GUIDE TO THIS CODE:
-     * 1. Extract lang from URL
-     * 2. Fetch JSON data
-     * 3. Render HTML dynamically
-     * 4. Highlight Code using Prism
-     * 5. Animate items beautifully using GSAP
-     */
-
-    // --- STEP 1: Understand which language to load ---
-    const params = new URLSearchParams(window.location.search);
-    const langKey = params.get('lang') || 'html';
-    
-    // Map edge cases for filenames and icons
-    const langFileMap = { 'html':'html', 'css':'css', 'javascript':'javascript', 'c++':'c++', 'tailwind css':'tailwind', 'next.js':'nextjs', 'node.js':'nodejs' };
-    const iconFileMap = { 'html':'html.png', 'css':'css.png', 'javascript':'javascript.png', 'c++':'C++-(CPlusPlus).png', 'tailwind css':'Tailwind CSS.png', 'next.js':'Next.js.png', 'node.js':'Node.js.png' };
-    
-    const filename = langFileMap[langKey.toLowerCase()] || langKey.toLowerCase();
-    const iconTarget = iconFileMap[langKey.toLowerCase()] || `${langKey.toLowerCase()}.png`;
-
-    // Global variable to store data for searching
-    let devData = null;
-
-    // --- STEP 2: Fetch Data from JSON ---
-    async function loadData() {
-      try {
-        const res = await fetch(`../data/docs/${filename}.json`);
-        if (!res.ok) throw new Error('Data not found');
-        devData = await res.json();
-        
-        buildUI();
-      } catch (err) {
-        showErrorPage();
+      :root {
+        --bg-color: rgba(10, 10, 12, 0.4);
+        --sidebar-bg: rgba(20, 20, 22, 0.4);
+        --card-bg: rgba(255, 255, 255, 0.035);
+        --text-main: #ffffff;
+        --text-muted: #94a3b8;
+        --accent: #818cf8;
+        --accent-glow: rgba(129, 140, 248, 0.25);
+        --border: rgba(255, 255, 255, 0.05);
+        --glass-blur: blur(50px) saturate(180%);
       }
-    }
 
-    // --- STEP 3: Build the UI Elements ---
-    function buildUI() {
-      // Hide loader, show structure
-      document.getElementById('loader').style.display = 'none';
-      document.getElementById('sidebar').style.display = 'flex';
-      document.getElementById('mainContent').style.display = 'block';
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        scroll-behavior: smooth;
+        /* Smooth scrolling for anchor links */
+      }
 
-      // 1. Build Hero Section
-      let html = `
+      body {
+        background: transparent;
+        color: var(--text-main);
+        font-family: "Inter", sans-serif;
+        overflow: hidden;
+        /* Hide main body scroll, use inner scrolling */
+        height: 100vh;
+        display: flex;
+      }
+
+      /* Ambient background blob */
+      .ambient-bg {
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background:
+          radial-gradient(
+            circle at 50% 50%,
+            rgba(140, 122, 230, 0.08),
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 80% 20%,
+            rgba(0, 184, 148, 0.05),
+            transparent 40%
+          );
+        z-index: -1;
+        pointer-events: none;
+      }
+
+      /* ========================================= */
+      /* 2. LAYOUT: SIDEBAR & MAIN CONTENT        */
+      /* ========================================= */
+
+      .sidebar {
+        width: 300px;
+        height: 100vh;
+        flex-shrink: 0;
+        background: var(--sidebar-bg);
+        border-right: 1px solid var(--border);
+        backdrop-filter: var(--glass-blur);
+        -webkit-backdrop-filter: var(--glass-blur);
+        box-shadow: 10px 0 50px rgba(0, 0, 0, 0.3);
+        display: flex;
+        flex-direction: column;
+        padding: 30px 20px;
+        z-index: 100;
+      }
+
+      .search-container {
+        margin-bottom: 30px;
+      }
+
+      .search-box {
+        background: rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 14px;
+        padding: 14px 18px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .search-box:focus-within {
+        background: rgba(0, 0, 0, 0.3);
+        border-color: rgba(255, 255, 255, 0.15);
+        box-shadow:
+          0 0 0 1px var(--accent),
+          0 0 20px var(--accent-glow);
+      }
+
+      .search-box svg {
+        opacity: 0.4;
+        transition: all 0.3s;
+      }
+
+      .search-box:focus-within svg {
+        opacity: 0.8;
+        color: var(--accent);
+        transform: scale(1.1);
+      }
+
+      .search-box input {
+        background: transparent;
+        border: none;
+        color: white;
+        font-size: 14px;
+        font-weight: 500;
+        width: 100%;
+        outline: none;
+        font-family: "Inter", sans-serif;
+      }
+
+      .search-box input::placeholder {
+        color: rgba(255, 255, 255, 0.25);
+      }
+
+      .nav-list {
+        flex: 1;
+        overflow-y: auto;
+        overflow-x: hidden;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        padding-right: 8px;
+        position: relative;
+      }
+
+      .nav-list::-webkit-scrollbar {
+        width: 4px;
+      }
+
+      .nav-list::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 10px;
+      }
+
+      .nav-item {
+        padding: 10px 16px;
+        border-radius: 10px;
+        color: var(--text-muted);
+        cursor: pointer;
+        font-size: 13.5px;
+        font-weight: 500;
+        transition:
+          color 0.3s,
+          background 0.3s;
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        white-space: nowrap;
+        position: relative;
+        z-index: 2;
+      }
+
+      .nav-item.active {
+        color: #fff;
+      }
+
+      /* The Advanced Sliding Pill */
+      .nav-indicator {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 38px;
+        background: linear-gradient(
+          90deg,
+          rgba(129, 140, 248, 0.1),
+          rgba(129, 140, 248, 0.02)
+        );
+        border-left: 2px solid var(--accent);
+        border-radius: 4px;
+        z-index: 1;
+        pointer-events: none;
+        opacity: 0;
+      }
+
+      .nav-item:hover {
+        color: #fff;
+        background: rgba(255, 255, 255, 0.03);
+      }
+
+      /* Right Main Content */
+      .main-content {
+        flex: 1;
+        height: 100vh;
+        overflow-y: auto;
+        padding: 40px;
+        perspective: 1000px;
+      }
+
+      /* ========================================= */
+      /* 3. COMPONENTS: HERO & CARDS              */
+      /* ========================================= */
+
+      /* Hero Section */
+      .hero {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 40px;
+        backdrop-filter: var(--glass-blur);
+        margin-bottom: 40px;
+        display: flex;
+        gap: 30px;
+        align-items: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        transform-origin: top center;
+      }
+
+      .hero-icon {
+        width: 100px;
+        height: 100px;
+        object-fit: contain;
+        filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.3));
+      }
+
+      .hero-info {
+        flex: 1;
+      }
+
+      .hero-title {
+        font-size: 48px;
+        font-weight: 700;
+        margin-bottom: 5px;
+        background: linear-gradient(135deg, #ffffff, #a0a0a5);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .hero-subtitle {
+        color: var(--accent);
+        font-weight: 600;
+        font-size: 16px;
+        margin-bottom: 20px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+      }
+
+      /* Two-col Definition Grid */
+      .def-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-top: 20px;
+      }
+
+      .def-box {
+        background: rgba(0, 0, 0, 0.2);
+        padding: 20px;
+        border-radius: 12px;
+        border-left: 3px solid var(--accent);
+      }
+
+      .def-box.hinglish {
+        border-left-color: #00b894;
+        background: linear-gradient(
+          90deg,
+          rgba(0, 184, 148, 0.05),
+          transparent
+        );
+      }
+
+      .def-box h4 {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.5);
+        text-transform: uppercase;
+        margin-bottom: 10px;
+        font-weight: 600;
+      }
+
+      /* Attributes Cards */
+      .attr-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 30px;
+        margin-bottom: 24px;
+        backdrop-filter: var(--glass-blur);
+      }
+
+      .attr-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+      }
+
+      .attr-title {
+        font-family: "Fira Code", monospace;
+        font-size: 22px;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .attr-desc-en {
+        font-size: 16px;
+        line-height: 1.6;
+        color: #e0e0e0;
+        margin-bottom: 15px;
+      }
+
+      .attr-desc-hi {
+        font-size: 15px;
+        line-height: 1.6;
+        color: #d1eadb;
+        background: rgba(0, 184, 148, 0.08);
+        border-left: 3px solid #00b894;
+        padding: 15px 20px;
+        border-radius: 0 8px 8px 0;
+        margin-bottom: 20px;
+      }
+
+      /* Code Block Area */
+      .code-wrapper {
+        position: relative;
+        background: #1e1e1e;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        overflow: hidden;
+        box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.3);
+      }
+
+      .code-header {
+        background: #2d2d2d;
+        padding: 10px 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .code-dots {
+        display: flex;
+        gap: 8px;
+      }
+
+      .code-dots span {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: #ff5f56;
+      }
+
+      .code-dots span:nth-child(2) {
+        background: #ffbd2e;
+      }
+
+      .code-dots span:nth-child(3) {
+        background: #27c93f;
+      }
+
+      .copy-btn {
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        color: white;
+        padding: 6px 12px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+
+      .copy-btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+
+      .code-wrapper pre {
+        margin: 0 !important;
+        padding: 20px !important;
+        background: transparent !important;
+        border: none !important;
+        font-family: "Fira Code", monospace !important;
+        font-size: 14.5px !important;
+      }
+
+      /* Scrollbars */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 10px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.4);
+      }
+
+      /* Loader */
+      #loader {
+        position: fixed;
+        inset: 0;
+        background: var(--bg-color);
+        z-index: 50;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .spinner {
+        width: 50px;
+        height: 50px;
+        border: 3px solid rgba(255, 255, 255, 0.1);
+        border-top-color: var(--accent);
+        border-radius: 50%;
+        animation: spin 1s infinite cubic-bezier(0.5, 0.1, 0.4, 0.9);
+      }
+
+      @keyframes spin {
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* --- Phase 1: Pretext Animation Styles --- */
+      .line-mask {
+        overflow: hidden;
+        display: block;
+        height: 1.6em; /* Matches line-height */
+        margin-bottom: 2px;
+      }
+      
+      .line-inner {
+        display: block;
+        transform: translateY(100%);
+      }
+
+      .scramble-title {
+        font-family: inherit;
+        display: inline-block;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Background Ambient Glow -->
+    <div class="ambient-bg"></div>
+
+    <!-- Full Screen Loader -->
+    <div id="loader">
+      <div class="spinner"></div>
+      <div
+        style="
+          margin-top: 20px;
+          color: var(--text-muted);
+          font-weight: 500;
+          font-size: 15px;
+        "
+      >
+        Initializing Engine...
+      </div>
+    </div>
+
+    <!-- Left Navigation Sidebar -->
+    <aside class="sidebar" id="sidebar" style="display: none">
+      <div class="search-container">
+        <div class="search-box">
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+          >
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="Search Documentation..."
+          />
+        </div>
+      </div>
+      <nav class="nav-list" id="navList">
+        <div class="nav-indicator" id="navIndicator"></div>
+        <!-- Links generated by JS -->
+      </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content" id="mainContent" style="display: none">
+      <!-- Hero and Cards generated by JS -->
+    </main>
+
+    <!-- ========================================= -->
+    <!-- 4. EXTERNAL LIBRARIES (CDN)             -->
+    <!-- ========================================= -->
+    <!-- GSAP for Smooth Animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <!-- Prism.js for code highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+
+    <!-- ========================================= -->
+    <!-- 5. JAVASCRIPT LOGIC                     -->
+    <!-- ========================================= -->
+    <script type="module">
+      import { prepare, layout } from "https://esm.sh/@chenglou/pretext";
+
+      /**
+       * BEGINNER GUIDE TO THIS CODE:
+       * 1. Extract lang from URL
+       * 2. Fetch JSON data
+       * 3. Render HTML dynamically
+       * 4. Highlight Code using Prism
+       * 5. Animate items beautifully using GSAP
+       */
+
+      function escapeHTML(str) {
+        if (typeof str !== "string") return "";
+        return str
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+
+      // --- STEP 1: Understand which language to load ---
+      const params = new URLSearchParams(window.location.search);
+      const langKey = params.get("lang") || "html";
+
+      // Map edge cases for filenames and icons
+      const langFileMap = {
+        html: "html",
+        css: "css",
+        javascript: "javascript",
+        "c++": "c++",
+        "tailwind css": "tailwind",
+        "next.js": "nextjs",
+        "node.js": "nodejs",
+      };
+      const iconFileMap = {
+        html: "html.png",
+        css: "css.png",
+        javascript: "javascript.png",
+        "c++": "C++-(CPlusPlus).png",
+        "tailwind css": "Tailwind CSS.png",
+        "next.js": "Next.js.png",
+        "node.js": "Node.js.png",
+      };
+
+      const filename =
+        langFileMap[langKey.toLowerCase()] || langKey.toLowerCase();
+      const iconTarget =
+        iconFileMap[langKey.toLowerCase()] || `${langKey.toLowerCase()}.png`;
+
+      // Global variable to store data for searching
+      let devData = null;
+      let currentActiveId = null;
+      let isManualScrolling = false; // Flag to prevent jumpy highlights during manual clicks
+
+      // --- STEP 2: Fetch Data from JSON ---
+      async function loadData() {
+        try {
+          const res = await fetch(`../data/docs/${filename}.json`);
+          if (!res.ok) throw new Error("Data not found");
+          devData = await res.json();
+
+          buildUI();
+        } catch (err) {
+          showErrorPage();
+        }
+      }
+
+      // --- STEP 3: Build the UI Elements ---
+      function buildUI() {
+        // Hide loader, show structure
+        document.getElementById("loader").style.display = "none";
+        document.getElementById("sidebar").style.display = "flex";
+        document.getElementById("mainContent").style.display = "block";
+
+        // 1. Build Hero Section
+        let html = `
         <div class="hero gs-hero">
           <img src="../icon/${iconTarget}" class="hero-icon" onerror="this.src='../icon/tools.png'" alt="Logo" />
           <div class="hero-info">
-            <div class="hero-subtitle">${devData.meaning}</div>
-            <div class="hero-title">${devData.language}</div>
+            <div class="hero-subtitle">${escapeHTML(devData.meaning)}</div>
+            <div class="hero-title">${escapeHTML(devData.language)}</div>
             <div style="color: #bbb; line-height: 1.5; margin-bottom: 5px; font-size: 15.5px;">
-              <strong style="color:#dfdfdf;">Use Case:</strong> ${devData.useCase}
+              <strong style="color:#dfdfdf;">Use Case:</strong> ${escapeHTML(devData.useCase)}
             </div>
             
             <div class="def-grid">
               <div class="def-box">
                 <h4>Global Definition</h4>
-                <div style="font-size: 14.5px; line-height: 1.6;">${devData.definition.en}</div>
+                <div id="def-en-content" style="font-size: 14.5px; line-height: 1.6;">${escapeHTML(devData.definition.en)}</div>
               </div>
               <div class="def-box hinglish">
-                <h4>Hinglish Meaning</h4>
-                <div style="font-size: 14.5px; line-height: 1.6; color:#e0e0e0;">${devData.definition.hi}</div>
+                <h4>Apni Bhasa Mai</h4>
+                <div id="def-hi-content" style="font-size: 14.5px; line-height: 1.6; color:#e0e0e0;">${escapeHTML(devData.definition.hi)}</div>
               </div>
             </div>
           </div>
         </div>
       `;
 
-      // 2. Build Attributes & Sidebar Navigation
-      let navHtml = '';
-      
-      if (devData.attributesList && devData.attributesList.length > 0) {
-        devData.attributesList.forEach((attr, idx) => {
-          const cardId = `attr-${idx}`; // Unique ID for anchor linking
+        // 2. Build Attributes & Sidebar Navigation
+        let navHtml = "";
 
-          // Build Sidebar Link
-          navHtml += `
-            <a href="#" onclick="scrollToAttr(event, '${cardId}')" class="nav-item gs-nav">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
-              ${attr.name}
+        if (devData.attributesList && devData.attributesList.length > 0) {
+          devData.attributesList.forEach((attr, idx) => {
+            const cardId = `attr-${idx}`; // Unique ID for anchor linking
+
+            // Build Sidebar Link
+            navHtml += `
+            <a href="#" onclick="scrollToAttr(event, '${cardId}')" class="nav-item gs-nav" title="${escapeHTML(attr.name)}">
+              <span style="overflow: hidden; text-overflow: ellipsis; padding-left: 6px;">${escapeHTML(attr.name)}</span>
             </a>
           `;
 
-          // Prepare Code (Escape html tags so they don't render as real inputs)
-          const cleanCode = attr.example_code.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-          let prismLangClass = 'language-' + (filename === 'javascript' ? 'javascript' : filename);
+            // Prepare Code (Escape html tags so they don't render as real inputs)
+            const cleanCode = escapeHTML(attr.example_code);
+            let prismLangClass =
+              "language-" +
+              (filename === "javascript" ? "javascript" : filename);
 
-          // Build Main Card
-          html += `
-            <div class="attr-card gs-card" id="${cardId}" data-name="${attr.name.toLowerCase()}">
+            // Build Main Card
+            html += `
+            <div class="attr-card gs-card" id="${cardId}" data-name="${escapeHTML(attr.name).toLowerCase()}">
               <div class="attr-header">
                 <div class="attr-title">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8c7ae6" stroke-width="2.5"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
-                  ${attr.name}
+                  ${escapeHTML(attr.name)}
                 </div>
               </div>
               
-              <div class="attr-desc-en">${attr.explanation_en}</div>
-              <div class="attr-desc-hi">💡 <strong>Hinglish:</strong> ${attr.explanation_hi}</div>
+              <div class="attr-desc-en">${escapeHTML(attr.explanation_en)}</div>
+              <div class="attr-desc-hi">
+                <picture>
+                  <source srcset="https://fonts.gstatic.com/s/e/notoemoji/latest/1f4a1/512.webp" type="image/webp">
+                  <img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f4a1/512.gif" alt="💡" width="32" height="32">
+                </picture>${escapeHTML(attr.explanation_hi)}</div>
               
               <div class="code-wrapper">
                 <div class="code-header">
@@ -472,85 +679,286 @@
               </div>
             </div>
           `;
+          });
+        }
+
+        document.getElementById("navList").innerHTML = `
+        <div class="nav-indicator" id="navIndicator"></div>
+        ${navHtml}
+      `;
+        document.getElementById("mainContent").innerHTML = html;
+
+        // Initialize the first item as active
+        setTimeout(() => {
+          const firstAttr = devData.attributesList[0];
+          if (firstAttr) updateActiveState("attr-0", false);
+        }, 100);
+
+        // Tell Prism.js to apply syntax colors to our new code blocks
+        Prism.highlightAll();
+
+        // RUN PRETEXT-INSPIRED LINE REVEALS
+        setTimeout(() => {
+          runPretextStagger(document.getElementById('def-en-content'), devData.definition.en);
+          runPretextStagger(document.getElementById('def-hi-content'), devData.definition.hi);
+        }, 800);
+
+        // Setup ScrollSpy
+        setupScrollSpy();
+
+        // Setup Magnetic Interactions
+        setupMagneticEffect();
+
+        // Trigger GSAP Animations
+        playEntranceAnimations();
+      }
+
+      // --- ADVANCED TEXT ENGINE: SCRAMBLE & REVEAL ---
+      function scrambleText(element, text, duration = 1.0) {
+        if (!element) return;
+        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*()_+";
+        const total = text.length;
+        let progress = 0;
+        
+        const update = () => {
+          progress += 1 / (60 * duration);
+          if (progress >= 1) {
+            element.textContent = text;
+            return;
+          }
+          
+          let result = "";
+          for(let i=0; i<total; i++) {
+            if (i < progress * total) result += text[i];
+            else result += chars[Math.floor(Math.random() * chars.length)];
+          }
+          element.textContent = result;
+          requestAnimationFrame(update);
+        };
+        update();
+      }
+
+      // --- ADVANCED TEXT ENGINE: PRETEXT LINE SPLITTER ---
+      function runPretextStagger(container, text) {
+        if (!container) return;
+        
+        // Define Font (matches your CSS)
+        const font = {
+          family: "'Inter', sans-serif",
+          size: 14.5,
+          weight: 400,
+          lineHeight: 1.6
+        };
+
+        // Prepare and Layout using the real Pretext Engine
+        const prepared = prepare({ text, font });
+        const result = layout(prepared, { width: container.offsetWidth });
+        
+        // Render lines
+        container.innerHTML = result.lines.map(line => `
+          <span class="line-mask"><span class="line-inner">${line.text}</span></span>
+        `).join('');
+
+        gsap.to(container.querySelectorAll('.line-inner'), {
+          y: 0,
+          duration: 0.8,
+          stagger: 0.1,
+          ease: "power3.out"
         });
       }
 
-      document.getElementById('navList').innerHTML = navHtml;
-      document.getElementById('mainContent').innerHTML = html;
+      // --- NEW: Magnetic Hover Effect ---
+      function setupMagneticEffect() {
+        const items = document.querySelectorAll(".nav-item");
 
-      // Tell Prism.js to apply syntax colors to our new code blocks
-      Prism.highlightAll();
+        items.forEach((item) => {
+          item.addEventListener("mousemove", (e) => {
+            const rect = item.getBoundingClientRect();
+            const x = e.clientX - rect.left - rect.width / 2;
+            const y = e.clientY - rect.top - rect.height / 2;
 
-      // Trigger GSAP Animations
-      playEntranceAnimations();
-    }
+            gsap.to(item, {
+              x: x * 0.2, // Subtle pull
+              y: y * 0.2,
+              duration: 0.3,
+              ease: "power2.out",
+            });
+          });
 
-    // --- STEP 4: Real-time Search Filter ---
-    document.getElementById('searchInput').addEventListener('input', (e) => {
-      const term = e.target.value.toLowerCase();
-      
-      // Filter Sidebar Links
-      document.querySelectorAll('.nav-item').forEach(link => {
-        const txt = link.textContent.toLowerCase();
-        link.style.display = txt.includes(term) ? 'flex' : 'none';
-      });
+          item.addEventListener("mouseleave", () => {
+            gsap.to(item, {
+              x: 0,
+              y: 0,
+              duration: 0.5,
+              ease: "elastic.out(1, 0.3)",
+            });
+          });
+        });
+      }
 
-      // Filter Main Cards
-      document.querySelectorAll('.attr-card').forEach(card => {
-        const name = card.getAttribute('data-name');
-        if(name.includes(term)) {
-          card.style.display = 'block';
-          // GSAP micro animation for showing up again nicely
-          gsap.fromTo(card, { opacity: 0, scale: 0.98 }, { opacity: 1, scale: 1, duration: 0.3 });
-        } else {
-          card.style.display = 'none';
+      // Handle Keyboard Shortcuts
+      window.addEventListener("keydown", (e) => {
+        if (e.key === "/" || (e.metaKey && e.key === "k")) {
+          e.preventDefault();
+          document.getElementById("searchInput").focus();
         }
       });
-    });
 
-    // --- STEP 5: Beautiful GSAP Animations ---
-    function playEntranceAnimations() {
-      // Animate background glow slowly
-      gsap.to('.ambient-bg', { rotation: 360, transformOrigin: "center center", duration: 120, repeat: -1, ease: "linear" });
+      // --- NEW: ScrollSpy Logic ---
+      function setupScrollSpy() {
+        const container = document.getElementById("mainContent");
 
-      // Sidebar links cascade in from the left
-      gsap.from('.gs-nav', {
-        x: -30, opacity: 0, duration: 0.6, stagger: 0.05, ease: 'back.out(1.5)'
-      });
+        container.addEventListener("scroll", () => {
+          if (isManualScrolling) return; // Don't fight the manual click scroll
 
-      // Main Hero springs from top seamlessly
-      gsap.from('.gs-hero', {
-        y: -50, opacity: 0, scale: 0.95, duration: 0.9, ease: 'power4.out', delay: 0.1
-      });
+          const cards = document.querySelectorAll(".attr-card");
+          let activeId = null;
 
-      // Cards slide up beautifully from the bottom
-      gsap.from('.gs-card', {
-        y: 60, opacity: 0, duration: 0.8, stagger: 0.1, ease: 'power3.out', delay: 0.3
-      });
-    }
+          cards.forEach((card) => {
+            const rect = card.getBoundingClientRect();
+            // If the top of the card is in the top 30% of the viewport, it's the active one
+            if (rect.top < window.innerHeight * 0.3) {
+              activeId = card.id;
+            }
+          });
 
-    // --- STEP 6: Helper Function for Copy button ---
-    document.addEventListener('click', (e) => {
-      if (e.target.classList.contains('copy-action-btn')) {
-        const rawCode = decodeURIComponent(e.target.getAttribute('data-code'));
-        navigator.clipboard.writeText(rawCode).then(() => {
-          const originalText = e.target.innerText;
-          e.target.innerText = 'Copied! ✓';
-          e.target.style.background = 'rgba(39, 201, 63, 0.3)';
-          setTimeout(() => {
-            e.target.innerText = originalText;
-            e.target.style.background = 'rgba(255,255,255,0.1)';
-          }, 2000);
+          if (activeId && activeId !== currentActiveId) {
+            updateActiveState(activeId);
+          }
         });
       }
-    });
 
-    // --- STEP 7: Error Page if file missing ---
-    function showErrorPage() {
-      document.getElementById('loader').style.display = 'none';
-      document.getElementById('mainContent').style.display = 'block';
-      
-      document.getElementById('mainContent').innerHTML = `
+      // --- NEW: Toggle Active States & Move Pill ---
+      function updateActiveState(id, animate = true) {
+        if (id === currentActiveId) return;
+        currentActiveId = id;
+
+        const navItems = document.querySelectorAll(".nav-item");
+        const indicator = document.getElementById("navIndicator");
+        let targetLink = null;
+
+        navItems.forEach((link) => {
+          link.classList.remove("active");
+          if (link.getAttribute("onclick")?.includes(`'${id}'`)) {
+            link.classList.add("active");
+            targetLink = link;
+          }
+        });
+
+        if (targetLink && indicator) {
+          const rect = targetLink.offsetTop;
+          const height = targetLink.offsetHeight;
+
+          gsap.to(indicator, {
+            y: rect,
+            height: height,
+            opacity: 1,
+            duration: animate ? 0.4 : 0,
+            ease: "expo.out",
+          });
+        }
+      }
+
+      // --- STEP 4: Real-time Search Filter ---
+      document.getElementById("searchInput").addEventListener("input", (e) => {
+        const term = e.target.value.toLowerCase();
+
+        // Filter Sidebar Links
+        document.querySelectorAll(".nav-item").forEach((link) => {
+          const txt = link.textContent.toLowerCase();
+          link.style.display = txt.includes(term) ? "flex" : "none";
+        });
+
+        // Filter Main Cards
+        document.querySelectorAll(".attr-card").forEach((card) => {
+          const name = card.getAttribute("data-name");
+          if (name.includes(term)) {
+            card.style.display = "block";
+            // GSAP micro animation for showing up again nicely
+            gsap.fromTo(
+              card,
+              { opacity: 0, scale: 0.98 },
+              { opacity: 1, scale: 1, duration: 0.3 },
+            );
+          } else {
+            card.style.display = "none";
+          }
+        });
+      });
+
+      // --- STEP 5: Beautiful GSAP Animations ---
+      function playEntranceAnimations() {
+        // Animate background glow slowly
+        gsap.to(".ambient-bg", {
+          rotation: 360,
+          transformOrigin: "center center",
+          duration: 120,
+          repeat: -1,
+          ease: "linear",
+        });
+
+        // Sidebar links cascade in from the left
+        gsap.from(".gs-nav", {
+          x: -30,
+          opacity: 0,
+          duration: 0.6,
+          stagger: 0.05,
+          ease: "back.out(1.5)",
+        });
+
+        // Main Hero springs from top seamlessly
+        gsap.from(".gs-hero", {
+          y: -50,
+          opacity: 0,
+          scale: 0.95,
+          duration: 0.9,
+          ease: "power4.out",
+          delay: 0.1,
+        });
+
+        // Cards slide up beautifully from the bottom
+        gsap.from(".gs-card", {
+          y: 60,
+          opacity: 0,
+          duration: 0.8,
+          stagger: 0.2,
+          ease: "power3.out",
+          delay: 0.3,
+          onStart: function() {
+            // Scramble headers when they appear!
+            const targets = document.querySelectorAll('.gs-card .attr-title');
+            targets.forEach((el, idx) => {
+              const original = el.innerText;
+              setTimeout(() => scrambleText(el, original), (idx * 200) + 500);
+            });
+          }
+        });
+      }
+
+      // --- STEP 6: Helper Function for Copy button ---
+      document.addEventListener("click", (e) => {
+        if (e.target.classList.contains("copy-action-btn")) {
+          const rawCode = decodeURIComponent(
+            e.target.getAttribute("data-code"),
+          );
+          navigator.clipboard.writeText(rawCode).then(() => {
+            const originalText = e.target.innerText;
+            e.target.innerText = "Copied! ✓";
+            e.target.style.background = "rgba(39, 201, 63, 0.3)";
+            setTimeout(() => {
+              e.target.innerText = originalText;
+              e.target.style.background = "rgba(255,255,255,0.1)";
+            }, 2000);
+          });
+        }
+      });
+
+      // --- STEP 7: Error Page if file missing ---
+      function showErrorPage() {
+        document.getElementById("loader").style.display = "none";
+        document.getElementById("mainContent").style.display = "block";
+
+        document.getElementById("mainContent").innerHTML = `
         <div style="text-align: center; margin-top: 150px; animation: fadeIn 0.8s;">
           <h1 style="font-size: 70px; margin-bottom: 20px;">🫣</h1>
           <h2 style="font-size: 36px; color: #ff7675; margin-bottom: 15px;">Oops! Data Not Found</h2>
@@ -562,23 +970,36 @@
           </p>
         </div>
       `;
-    }
-
-    // --- STEP 8: Custom Scroller ---
-    function scrollToAttr(e, id) {
-      e.preventDefault();
-      const container = document.getElementById('mainContent');
-      const target = document.getElementById(id);
-      if (container && target) {
-        container.scrollTo({
-          top: target.offsetTop - 40,
-          behavior: 'smooth'
-        });
       }
-    }
 
-    // Start everything by calling loadData()
-    setTimeout(loadData, 600); // 600ms delay to enjoy the sleek engine loader
-  </script>
-</body>
+      // --- STEP 8: Custom Scroller ---
+      function scrollToAttr(e, id) {
+        if (e) e.preventDefault();
+
+        const container = document.getElementById("mainContent");
+        const target = document.getElementById(id);
+
+        if (container && target) {
+          isManualScrolling = true;
+          updateActiveState(id); // Instantly snap the sidebar
+
+          container.scrollTo({
+            top: target.offsetTop - 40,
+            behavior: "smooth",
+          });
+
+          // Re-enable ScrollSpy after animation finishes
+          setTimeout(() => {
+            isManualScrolling = false;
+          }, 800);
+        }
+      }
+
+      // EXPOSE TO WINDOW (Essential for type="module")
+      window.scrollToAttr = scrollToAttr;
+
+      // Start everything by calling loadData()
+      setTimeout(loadData, 600); // 600ms delay to enjoy the sleek engine loader
+    </script>
+  </body>
 </html>
