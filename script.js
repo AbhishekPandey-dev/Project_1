@@ -113,3 +113,37 @@ if (converterIcon) {
 if (toolsIcon) {
   toolsIcon.addEventListener('click', () => WindowManager.open('tools'));
 }
+
+// DevDocs Dock bindings
+document.querySelectorAll('.dockbar .dockitems').forEach(item => {
+  const labelEl = item.querySelector('.dockitemlabel');
+  const linkEl = item.querySelector('.dockitemlink');
+  const imgEl = item.querySelector('.dockitemicon');
+  
+  if (labelEl && linkEl && imgEl) {
+    const title = labelEl.textContent.trim();
+    // Exclude 'Google' as it's not a dev doc
+    if (title === 'Google') return;
+
+    // Use a clean app ID
+    const appName = `devdocs-${title.toLowerCase().replace(/[^a-z0-9]/g, '')}`;
+    const iconPath = imgEl.getAttribute('src');
+    
+    // Register dynamically in WindowManager
+    if (window.WindowManager) {
+      window.WindowManager.registerApp(appName, {
+        title: title + ' Docs',
+        src: `assets/componets/devdocs.html?lang=${encodeURIComponent(title)}`,
+        icon: iconPath,
+        defaultWidth: 1200,
+        defaultHeight: 750
+      });
+
+      // Add click event
+      linkEl.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.WindowManager.open(appName);
+      });
+    }
+  }
+});

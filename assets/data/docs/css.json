@@ -1,0 +1,42 @@
+{
+  "language": "CSS",
+  "meaning": "Cascading Style Sheets",
+  "function": "Styling and visually formatting web documents.",
+  "useCase": "Adding colors, layouts, flex-box grids, fonts, and animations to the HTML structure.",
+  "definition": {
+    "en": "CSS is a stylesheet language used to describe the presentation of a document written in HTML or XML. It acts as the skin and makeup for the HTML structure.",
+    "hi": "HTML se humne sirf dhacha banaya tha, par usko sundar (beautiful) banane ka kaam CSS ka hai. Color, design, animation sab CSS lagata hai. Samajh lo HTML car ki chasis hai toh CSS chaka-chak paint!"
+  },
+  "attributesList": [
+    {
+      "name": "color",
+      "explanation_en": "Sets the text color of an element.",
+      "explanation_hi": "Text ka rang badalne ke liye hum 'color' property use karte hain. Isme aap HEX, RGB ya seedha colour ka naam de sakte ho.",
+      "example_code": "p {\n  color: #ff3366;\n}"
+    },
+    {
+      "name": "background-color",
+      "explanation_en": "Sets the background color of a container element.",
+      "explanation_hi": "Kisi diwar pe paint marne jaisa hai. Container ke background ka color set karta hai.",
+      "example_code": ".card {\n  background-color: rgba(0, 0, 0, 0.5);\n}"
+    },
+    {
+      "name": "display",
+      "explanation_en": "Specifies the display behavior of an element.",
+      "explanation_hi": "Sabse important property hai! Ye decide karta hai ki element page pe kaise act karega (block, flex ya grid). Flex use karke saare elements perfect line me aajate hain.",
+      "example_code": ".navbar {\n  display: flex;\n  justify-content: space-between;\n}"
+    },
+    {
+      "name": "margin",
+      "explanation_en": "Creates space around elements, outside of any defined borders.",
+      "explanation_hi": "Apne aas-paas ke dusre elements se kitni doori rakhni hai, wo margin decide karta hai. (Element ke ekdam bahaar ki space)",
+      "example_code": "h2 {\n  margin-bottom: 20px;\n}"
+    },
+    {
+      "name": "padding",
+      "explanation_en": "Creates space around an element's content, inside of any defined borders.",
+      "explanation_hi": "Element ke border aur uske andar ke content ke beech ki gaddidar space. Jaise balloon me hawa bharte hain, padding usko andar se badhayega.",
+      "example_code": "button {\n  padding: 12px 24px;\n}"
+    }
+  ]
+}
