@@ -1,0 +1,42 @@
+{
+  "language": "HTML",
+  "meaning": "HyperText Markup Language",
+  "function": "Used to structure web pages and its content.",
+  "useCase": "Building the skeleton of website structures, layout blocks, texts, images, and links.",
+  "definition": {
+    "en": "HTML is the standard markup language for documents designed to be displayed in a web browser. It defines the meaning and structure of web content.",
+    "hi": "HTML ek markup language hai jisse hum websites ka structure (dhacha) banate hain. Jaise ghar banane ke liye eent (bricks) chahiye, waise hi website ka skeleton start karne ke liye HTML chahiye."
+  },
+  "attributesList": [
+    {
+      "name": "class",
+      "explanation_en": "Specifies one or more class names for an element (used to point to a class in a given style sheet).",
+      "explanation_hi": "Bhai, class use hota hai elements ko ek group me daalne ke liye taki CSS se hum ek sath sabki styling kar sakein. Same class multiple elements ko de sakte ho.",
+      "example_code": "<div class=\"super-button\">\n  Click me!\n</div>"
+    },
+    {
+      "name": "id",
+      "explanation_en": "Specifies a unique id for an element. Used for CSS styling or JavaScript identification.",
+      "explanation_hi": "ID bilkul aapke Aadhar card number ki tarah hai. Ek page pe ek ID sirf ek hi element pe use ho sakti hai. Ye mostly JavaScript se specific element pakadne ke liye use hoti hai.",
+      "example_code": "<p id=\"main-para\">\n  This paragraph is unique!\n</p>"
+    },
+    {
+      "name": "href",
+      "explanation_en": "Specifies the URL of the page the link goes to (used specifically inside <a> tags).",
+      "explanation_hi": "href ka matlab hai 'hypertext reference'. Jab tum kisi link (<a> tag) par click karte ho, toh ye tumko kis link pe le jaayega, wo target hum href me daalte hain.",
+      "example_code": "<a href=\"https://google.com\">\n  Go to Google\n</a>"
+    },
+    {
+      "name": "src",
+      "explanation_en": "Specifies the path to the media or external file (like images, iframes, or scripts).",
+      "explanation_hi": "src stands for source. Image file kahan se uthani hai ya fir script file kahan rakhi hai path me, wo location hum src attribute me dete hain.",
+      "example_code": "<img src=\"profile.jpg\" alt=\"My Photo\">\n<script src=\"app.js\"></script>"
+    },
+    {
+      "name": "style",
+      "explanation_en": "Used to add inline CSS styles over an element, such as color, font, size, etc.",
+      "explanation_hi": "Agar tumhe direct us hi HTML line me design (CSS) lagani ho, toh style attribute ka use karte hain. Isko Inline styling bolte hain.",
+      "example_code": "<h1 style=\"color: red; padding: 10px;\">\n  Red text with padding!\n</h1>"
+    }
+  ]
+}

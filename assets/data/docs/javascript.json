@@ -1,0 +1,42 @@
+{
+  "language": "JavaScript",
+  "meaning": "Dynamic Scripting Language",
+  "function": "Adds interactivity and dynamic behavior to web pages.",
+  "useCase": "Handling clicks, managing data, fetching APIs, and building complex frontend logic.",
+  "definition": {
+    "en": "JavaScript is a lightweight, interpreted programming language primarily used as a client-side script to interact with the user, manipulate the DOM, and fetch data.",
+    "hi": "Agar HTML body hai, CSS uske kapde hain, toh JavaScript uska Dimaag (brain) hai. Button dabane pe kya hoga? Pop-up kaise aayega? Data kahan se load hoga live? Ye saara magic JS hi karta hai."
+  },
+  "attributesList": [
+    {
+      "name": "console.log()",
+      "explanation_en": "Prints a message or JSON objects to the web console.",
+      "explanation_hi": "Coder ka sabse accha dost! Code me current data kya chal raha hai usko browser ke Dev tools console me print karwane ke liye iska use hota hai. Bug nikalne (debugging) ke time life saver hai.",
+      "example_code": "console.log('Bhai mera code yaha tak pohnch gaya!');\nconsole.log({ user: 'Abhishek' });"
+    },
+    {
+      "name": "let & const",
+      "explanation_en": "Keywords to declare variables safely. `let` can be reassigned, `const` cannot.",
+      "explanation_hi": "Variables banane ke naye tarike. Agar value aage chalke aapko change karni ho toh 'let' lagao, aur value agar zindagi bhar sem rakhni hai toh 'const' laga lo.",
+      "example_code": "let score = 90;\nscore = 100; // bilkul allow hai\n\nconst pi = 3.1415;\npi = 3.14; // ERROR dega browser gusse me!"
+    },
+    {
+      "name": "Arrow Functions",
+      "explanation_en": "A compact and modern way to write a JS function logic.",
+      "explanation_hi": "Function likhne ka chota aur ekdam swaggie tareeka! Isme 'function' keyword hat jaata hai aur hum '=>' (fat arrow) lagate hain.",
+      "example_code": "const add = (a, b) => {\n  return a + b;\n};\n// Yahan tak ki return hatakar direct bhi likh sakte ho:\nconst multiply = (x, y) => x * y;"
+    },
+    {
+      "name": "addEventListener",
+      "explanation_en": "Attaches a live event watcher (like click or input) to a specific element.",
+      "explanation_hi": "Element pe jasoos bitha dena. Jaise hi user ne click ya keyboard pe type kiya, ye active ho jata hai aur apna code run karta hai.",
+      "example_code": "const myBtn = document.getElementById('login');\nmyBtn.addEventListener('click', () => {\n  alert('Login dabaya gaya hai!');\n});"
+    },
+    {
+      "name": "fetch()",
+      "explanation_en": "Provides a clean way to fetch endpoint resources asynchronously across the network.",
+      "explanation_hi": "Server / API se background me data laane ka solid tarika. Ye promise return karta hai, matlab bhai thoda intezaar karo mai data lekar aata hu.",
+      "example_code": "fetch('https://api.github.com/users/github')\n  .then(res => res.json())\n  .then(data => {\n    console.log(data.name);\n  });"
+    }
+  ]
+}
